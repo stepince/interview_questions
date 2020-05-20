@@ -1,0 +1,3 @@
+nyc,  newark
+st. louis, washington d.c.
+la,  newark
