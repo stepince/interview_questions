@@ -1,35 +1,36 @@
 public class StringMatch {
 
     private static boolean find(String str, String pattern, int sIdx, int pIdx ){
+
+        if ( sIdx < str.length() && pIdx == pattern.length() ) return false;
+
         if ( sIdx == str.length() && pIdx == pattern.length() ) return true;
-        boolean wildCard = (pIdx < pattern.length() -1) && (pattern.charAt(pIdx+1) == '*');
-        if ( sIdx == str.length() && wildCard ) {
-            return find(str,pattern,sIdx,pIdx+2);
+
+        final boolean starPattern = pattern.length() - pIdx > 1 && pattern.charAt(pIdx+1) == '*';
+        if ( sIdx == str.length() ) return starPattern && find(str, pattern, sIdx, pIdx + 2);
+
+        final char ch = str.charAt(sIdx);
+        final String subPattern = starPattern ? pattern.substring(pIdx, pIdx+2) : null;
+        // repeat match
+        if ( (ch + "+").equals(subPattern) || (".+").equals(subPattern)) {
+            // move to the next char || move to the subPattern
+            return find( str, pattern, sIdx+1, pIdx ) || find( str, pattern, sIdx+1, pIdx+2 );
         }
-        if ( pIdx == pattern.length() ) return false;
-        boolean dot = (pattern.charAt(pIdx) == '.');
-        boolean isEqualsChar = str.charAt(sIdx) == pattern.charAt(pIdx);
-        if ( dot && wildCard ) {
-            // 0 case, 1 case, repeat case
-            return find(str,pattern,sIdx,pIdx+2) || find(str,pattern,sIdx+1,pIdx+2) || find(str,pattern,sIdx+1,pIdx);
+        // star pattern match
+        else if ( (ch + "*").equals(subPattern) || (".*").equals(subPattern) ) {
+            // move to the next char || skip this expr
+            return find( str, pattern, sIdx+1, pIdx ) || find( str, pattern, sIdx, pIdx+2 );
         }
-        else if ( isEqualsChar && wildCard ) {
-            // 1 case, repeat case
-            return find(str,pattern,sIdx+1,pIdx+2) || find(str,pattern,sIdx+1,pIdx);
+        // skip, 0 part of star pattern
+        else if ( starPattern ) {
+            return find( str, pattern, sIdx, pIdx+2 );
         }
-        // 0 case and no match
-        else if ( wildCard ){
-            // 0 case, skip
-            return find(str,pattern,sIdx,pIdx+2);
+        else if ( pattern.charAt(pIdx) == '.' || ch == pattern.charAt(pIdx) ) {
+            return find( str, pattern, sIdx+1, pIdx+1 );
         }
-        else if ( dot ){
-            return find(str,pattern,sIdx+1,pIdx+1);
+        else {
+            return false;
         }
-        // simple case of matching character
-        else if ( isEqualsChar ){
-            return find(str,pattern,sIdx+1,pIdx+1);
-        }
-        return false;
     }
 
     public static boolean find(String str, String pattern){
@@ -37,9 +38,26 @@ public class StringMatch {
     }
 
     public static void main(String[] args){
-        System.out.println("test");
-        String str = args[0].trim();
-        String pattern = args[1].trim();
+//        String str = args[0].trim();
+//        String pattern = args[1].trim();
+//        String str = "abbbbbbbbbbc";
+//        String pattern = "ab+c*";
+//        String str = "ad";
+//        String pattern = "a.";
+//        String str = "mississippi";
+//        String pattern = "mis*is*p*";
+        String str = "aasdfasdfasdfasdfas";
+        String pattern = "aasdf.*asdf.*asdf.*asdf.*s";
+//        String str = "mississippi";
+//        String pattern = "mis*is*ip*.";
+//        String pattern = "mis*is*p*.";
+//        String pattern = "mis*is*ip*.";
+//        String str = "aaaaaaaaaaaaab";
+//        String pattern = "a*a*a*a*a*a*a*a*a*a*c";
+        long time = System.currentTimeMillis();
+//        String str = "aaaaaaaaaaaaab";
+//        String pattern = "a*a*a*a*a*a*a*a*a*a*c";
         System.out.println(find(str,pattern));
+        System.out.println("time: " +  (System.currentTimeMillis() -  time));
     }
 }
