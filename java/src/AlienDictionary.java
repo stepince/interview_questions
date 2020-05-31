@@ -1,6 +1,4 @@
 import java.util.*;
-import java.util.stream.Collectors;
-
 /*
 
 get the alphabetical order of an alien dictionary
@@ -9,11 +7,11 @@ input:  bgg fbg fqf ffq gfg
 output: [b, q, f, g]
 
 input:  "baa" "abcd" "abca" "cab" "cad"
-Runtime:
+Time:
   O(V+E)
   O(N+A)
-  where is the number of words and is the size of the alphabet
-Space
+  where N is the number of words A and is the size of the alphabet
+Space:
   O(V+E)  ( The sum of the all the characters )
  */
 
@@ -37,7 +35,7 @@ public class AlienDictionary {
 
     void dfsVisit( Character node, Set<Character> visited, List<Character> l){
         visited.add(node);
-        for ( Character child : vertices.get(node) ){
+        for ( Character child : vertices.getOrDefault(node,Collections.emptySet() ) ){
             if ( !visited.contains(child) ){
                 dfsVisit(child,visited,l);
             }
@@ -71,7 +69,8 @@ public class AlienDictionary {
 
     public static void main(String[] args){
         AlienDictionary alienDictionary = new AlienDictionary();
-        List<String> words = Arrays.stream(args).collect(Collectors.toList());
+        //List<String> words = Arrays.asList(args);
+        List<String> words = Arrays.asList("bgg", "fbg", "fqf", "ffq", "gfg");
         alienDictionary.addWords(words);
         System.out.println(alienDictionary.topSort());
     }
