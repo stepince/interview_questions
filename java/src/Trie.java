@@ -20,6 +20,9 @@ import java.util.Map;
    space
    O(K^N)
    where K is the reference size (alphabet) and N is the number of words
+
+   Note:
+       All the descendants of tree share a common prefix
  */
 public class Trie {
 
@@ -27,12 +30,10 @@ public class Trie {
     private boolean word = false;
 
     public void add(String word){
-       if ( word == null || word.length() == 0 ) return;
+        if ( word == null || word.length() == 0 ) return;
         Trie currTrie = this;
         for( char ch: word.toCharArray() ){
-            if ( !currTrie.map.containsKey(ch) ) {
-                currTrie.map.put(ch,new Trie());
-            }
+            currTrie.map.putIfAbsent(ch, new Trie());
             currTrie = currTrie.map.get(ch);
         }
         currTrie.word = true;
