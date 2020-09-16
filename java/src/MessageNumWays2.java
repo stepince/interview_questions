@@ -25,6 +25,7 @@ public class MessageNumWays2 {
 
     static int numDecodings(char[] chars, int idx, Integer[] mem){
         if ( idx == chars.length ) return 1;
+        // '0' is illegal char
         if ( chars[idx] == '0' ) return 0;
 
         if ( mem[idx] != null ) return mem[idx];
@@ -40,6 +41,7 @@ public class MessageNumWays2 {
             // 1-9 any
             result += numDecodings(chars,idx+1,mem);
         }
+        // if at end of string just return result;
         if ( idx == chars.length -1 ) return (int)result;
         if ( chars[idx] == '*' && chars[idx+1] == '*' ) {
             // 11-19 all
