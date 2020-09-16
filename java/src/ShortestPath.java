@@ -47,10 +47,10 @@ public class ShortestPath {
     }
 
      public static int find( Node[] graph, int src, int dest){
-         int[] distance =  new int[graph.length];
+         int[] distance = new int[graph.length];
          Arrays.fill(distance,-1);
          distance[src] = 0;
-         Queue<Node> queue =  new LinkedList<>();
+         Queue<Node> queue = new LinkedList<>();
          queue.add(graph[src]);
 
          while (!queue.isEmpty()){

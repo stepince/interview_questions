@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.stream.Stream;
 
 public class ZeroSumSubArrayCount {
 
@@ -10,20 +9,18 @@ public class ZeroSumSubArrayCount {
         for( int num:  arr ){
             currSum += num;
             if( currSum == 0 ) ++count;
-            if ( prefixSumMap.containsKey(currSum )  ) {
-                int prefixSum = prefixSumMap.get(currSum);
-                count += prefixSum;
-                prefixSumMap.put(currSum, prefixSum+1 );
-            }
-            else {
-                prefixSumMap.put(currSum, 1);
-            }
+            count += prefixSumMap.getOrDefault(currSum,0);
+            prefixSumMap.merge(currSum, 1,Integer::sum);
         }
         return count;
     }
 
     public static void main(String[] args){
-        int[] arr = Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+//        int[] arr = Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+        int[] arr = {1,5,-5,0};
         System.out.println(find(arr));
     }
+
+
+
 }

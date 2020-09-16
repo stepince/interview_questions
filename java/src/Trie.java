@@ -33,8 +33,7 @@ public class Trie {
         if ( word == null || word.length() == 0 ) return;
         Trie currTrie = this;
         for( char ch: word.toCharArray() ){
-            currTrie.map.putIfAbsent(ch, new Trie());
-            currTrie = currTrie.map.get(ch);
+            currTrie = currTrie.map.computeIfAbsent(ch, (k)-> new Trie() );
         }
         currTrie.word = true;
     }

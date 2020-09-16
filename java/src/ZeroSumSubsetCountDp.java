@@ -1,4 +1,4 @@
-import java.util.Arrays;
+//import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,22 +28,30 @@ import java.util.Map;
     O(N*S)
  */
 public class ZeroSumSubsetCountDp {
+    public static Integer sum ( Integer a, Integer b ){
+        if ( a == null ) return b;
+        return a + b;
+    }
 
-    private static int find(int[] arr, int idx, Integer sum, Map<String,Integer> mem ){
-        if ( sum == 0 ) return 1;
-        if ( idx == 0 ) return 0;
-        String key = idx + ":" + sum;
+    private static int find(int[] arr, int idx, Integer total, Map<String,Integer> mem ){
+        if ( idx == arr.length ) {
+            return ( total != null && total == 0 ) ? 1 : 0;
+        }
+        String key = idx + ":" + total;
         if ( mem.containsKey(key)) return mem.get(key);
-        int result = find(arr, idx-1, sum -arr[idx-1], mem) + find(arr,idx-1, sum, mem);
-        mem.put(key,result);
-        return result;
+        int ans = find(arr, idx+1, sum(total,arr[idx]),mem) + find(arr, idx+1, total,mem);
+        mem.put(key,ans);
+        return ans;
     }
+
     public static int find(int[] arr) {
-        int sum = Arrays.stream(arr).sum();
-        return find(arr, arr.length, sum, new HashMap<>());
+        return find(arr, 0, null, new HashMap<>());
     }
+
     public static void main(String[] args){
-        int[] arr = Arrays.stream(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+//        int[] arr = Arrays.stream(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+
+        int[] arr = {9,2, 2,-4,-4,5,8};
         System.out.println(find(arr));
     }
 }

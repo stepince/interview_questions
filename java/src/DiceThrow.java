@@ -17,23 +17,27 @@ where is the number of faces
 public class DiceThrow {
 
     // the number of dices and throws are the same thing.
-    public static int combinations( int faces, int dices, int value){
+    public static int combinations( int faces, int dices, int sum){
        int combos = 0;
-       if ( value < 0 ) return 0;
-       if ( dices == 0 && value == 0 ) return 1;
+       if ( sum < 0 ) return 0;
+       if ( dices == 0 && sum == 0 ) return 1;
        if ( dices == 0 ) return 0;
 
        for ( int j = 1; j <= faces; ++j ) {
-           int total = combinations( faces, dices-1, value-j);
-           combos += total;
+           if ( j > sum ) break;
+           combos += combinations( faces, dices-1, sum-j);
        }
        return combos;
     }
 
      public static void main( String[] args ) {
-        int faces = Integer.parseInt(args[0]);
-        int dices = Integer.parseInt(args[1]);
-        int value = Integer.parseInt(args[2]);
+//        int faces = Integer.parseInt(args[0]);
+//        int dices = Integer.parseInt(args[1]);
+//        int value = Integer.parseInt(args[2]);
+
+         int faces = 6;
+         int dices = 2;
+         int value = 7;
         System.out.println(combinations( faces, dices, value));
      }
 

@@ -1,5 +1,5 @@
-import java.util.Arrays;
-import java.util.stream.Stream;
+//import java.util.Arrays;
+//import java.util.stream.Stream;
 /*
 
      Count the number of subsets that sum to zero
@@ -27,18 +27,27 @@ import java.util.stream.Stream;
     count - 5
  */
 public class ZeroSumSubsetCount {
-    private static int find(int[] arr, int idx, Integer sum ){
-        if ( sum == 0 ) return 1;
-        if ( idx == 0 ) return 0;
-        return find(arr, idx-1, sum-arr[idx-1]) + find(arr, idx-1, sum);
+
+    public static Integer sum ( Integer a, Integer b ){
+        if ( a == null ) return b;
+        return a + b;
     }
+
+    private static int find(int[] arr, int idx, Integer total ){
+        if ( idx == arr.length ) {
+            return ( total != null && total == 0 ) ? 1 : 0;
+        }
+
+        return find(arr, idx+1, sum(total,arr[idx])) + find(arr, idx+1, total);
+    }
+
     public static int find(int[] arr) {
-        // one for the empty set
-        int sum = Arrays.stream(arr).sum();
-        return find(arr, arr.length,sum);
+        return find(arr, 0,null);
     }
     public static void main(String[] args){
-        int[] arr = Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+//        int[] arr = Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+
+        int[] arr = {9,2, 2,-4,-4,5,8};
         System.out.println(find(arr));
     }
 }

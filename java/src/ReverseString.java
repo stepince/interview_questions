@@ -9,10 +9,18 @@ public class ReverseString {
         }
         return new String(arr);
     }
-
+    public static String reverseString2(String str){
+        if ( str == null || str.length() == 0 ) return str;
+        char[] arr = new char[str.length()];
+        for ( int i = 0; i < arr.length; ++i){
+            arr[i] = str.charAt(arr.length-i-1);
+        }
+        return new String(arr);
+    }
     public static void main(String[] args) {
         //String str = args[0];
         String str = "hello";
         System.out.println(reverseString(str));
+        System.out.println(reverseString2(str));
     }
 }

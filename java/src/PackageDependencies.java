@@ -9,9 +9,8 @@ public class PackageDependencies {
     Map<String, Set<String>> vertices  = new HashMap<>();
 
     public void add(String parent, String child){
-        vertices.putIfAbsent(parent, new HashSet<>());
         vertices.putIfAbsent(child, new HashSet<>());
-        vertices.get(parent).add(child);
+        vertices.computeIfAbsent(parent, (key)->new HashSet<>()).add(child);
     }
 
     void dfs(List<String> l ){

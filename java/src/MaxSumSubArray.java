@@ -10,21 +10,20 @@ Kadane algorithm
 O(n)
 */
 
-import java.util.Arrays;
-
 public class MaxSumSubArray {
 
    public static int find( int[] arr ){
        if ( arr.length == 0 ) return 0;
-       int maxCurrent = arr[0], maxGlobal = arr[0];
+       int curr = arr[0], maxGlobal = arr[0];
        for ( int i = 1; i < arr.length; ++i ){
-           maxCurrent = Math.max( maxCurrent + arr[i], arr[i]);
-           maxGlobal = Math.max(maxGlobal,maxCurrent);
+           curr = Math.max( curr + arr[i], arr[i]);
+           maxGlobal = Math.max(maxGlobal,curr);
        }
        return maxGlobal;
    }
     public static void main(String[] args){
-        int[] arr = Arrays.stream(args[0].split("[,\\s]+")).mapToInt(Integer::parseInt).toArray();
+//        int[] arr = Arrays.stream(args[0].split("[,\\s]+")).mapToInt(Integer::parseInt).toArray();
+        int[] arr = {1, -2, 3, 10, -4, 7, 2, -5};
         System.out.println(find(arr));
     }
 }

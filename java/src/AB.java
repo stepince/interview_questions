@@ -9,8 +9,12 @@ public class AB {
             if ( st.empty() ) {
                 st.push(ch);
             }
-            else if ( ch == 'b' && st.peek() == 'a' ) {
+            else if ( st.peek() == 'a' && ch == 'b') {
                 st.pop();
+            }
+            // return false
+            else if ( ch == 'b') {
+                return false;
             }
             else {
                 st.push(ch);
@@ -20,7 +24,8 @@ public class AB {
     }
 
     public static void main(String[] args){
-       String str = args[0].toLowerCase();
+//       String str = args[0].toLowerCase();
+        String str = "aabaaabbbabb";
        System.out.println(find(str));
     }
 }

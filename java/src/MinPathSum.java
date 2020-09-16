@@ -3,29 +3,33 @@ import java.util.*;
 /*
 *
 * algo: shortest weighted path
-  find:  O(4^N)
-  find2:  O(V+E)
+  find:  O(4^n)
+  find2: O(e lgv)
   *
-  * init visited
-  * init distance
-  * queue = new priorityQueue()
-  * queue.add(src)
-  * visited.add(src)
-  * distance(src) = 0
-  * while(!empty) {
-  *    node =  queue.remove();
-  *    loop adj = node.adj ;
-  *    if( adj != visited ) {
-  *         new_distance =  distance(node) + adj.weight;
-  *         if ( new_distance < distance(adj)  ){
-  *              queue.remove(adj)
-  *              distance(adj) = new_distance
-  *              queue.add(adj);
-  *         }
-  *    }
-  *    visited.add(adj)
-  * }
-  * return distance(dest)
+  *
+  *  void relax(u, v) {
+  *     if (u.dist + w(u,v) < v.dist) {
+  *         v.dist = u.dist + w(u,v);
+  *        // predecessor is only needed to get the path path
+  *        v.pred = u;
+  *      }
+  *  }
+  *
+  * void dijkstra(s) {
+  *     queue = new PriorityQueue<Vertex>();
+  *     for (each vertex v) {
+  *         v.dist = infinity;  // can use Integer.MAX_VALUE or Double.POSITIVE_INFINITY
+  *         queue.add(v);
+  *         v.pred = null;
+  *     }
+  *     s.dist = 0;
+  *
+  *     while (!queue.isEmpty()) {
+  *         u = queue.remove();
+  *         for (each vertex v adjacent to u)
+  *            relax(u, v);
+  *     }
+  *}
  */
 public class MinPathSum {
 
@@ -77,7 +81,6 @@ public class MinPathSum {
         int rows = matrix.length;
         int columns = matrix[0].length;
         int[][] distances = new int[rows][columns];
-        boolean[][] visited = new boolean[rows][columns];
         for ( int[]a: distances ) Arrays.fill(a,Integer.MAX_VALUE);
         //Queue<Node> queue = new PriorityQueue<>(a,b)-> distances[a.row][a.column] - distances[b.row][b.column] ));
         Queue<Node> queue = new PriorityQueue<>(Comparator.comparingInt(a -> distances[a.row][a.column]));
@@ -85,7 +88,6 @@ public class MinPathSum {
 
         // this would normally be zero
         distances[0][0] = matrix[0][0];
-        visited[0][0] = true;
         while( !queue.isEmpty() ){
             Node node = queue.remove();
             int distance = distances[node.row][node.column];
@@ -96,14 +98,17 @@ public class MinPathSum {
                     new Node(node.row+1,node.column) );
 
             for( Node v: adj ){
-                if ( v.row < 0 || v.column < 0 || v.row >= rows || v.column >= columns || visited[v.row][v.column] ) continue;
+                if ( v.row < 0 || v.column < 0 || v.row >= rows || v.column >= columns ) continue;
                 int newDistance = distance + matrix[v.row][v.column];
                 if ( newDistance < distances[v.row][v.column] ){
                     queue.remove(v);
                     distances[v.row][v.column]=newDistance;
                     queue.add(v);
+                    System.out.println("updated");
                 }
-                visited[node.row][node.column] = true;
+                else {
+                    System.out.println("Not updated");
+                }
             }
         }
         return distances[rows-1][columns-1];
@@ -118,7 +123,7 @@ public class MinPathSum {
                 {1,3,1},
                 {1,5,1},
                 {4,2,1} };
-        System.out.println(find(matrix));
+        //System.out.println(find(matrix));
 
         int[][] matrix2 = new int[][] {
                 {1,1,1,1,9,9,9},
@@ -127,7 +132,7 @@ public class MinPathSum {
                 {1,9,9,9,9,9,9},
                 {1,1,1,1,1,1,1}
         };
-        //System.out.println(find(matrix2));
+        System.out.println(find(matrix));
         System.out.println(find2(matrix2));
     }
 }

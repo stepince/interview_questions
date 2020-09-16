@@ -21,8 +21,11 @@ public class CheckBalancedParentheses {
             if ( st.empty() ){
                 st.push(ch);
             }
-            else if ( (ch == '}' && st.peek() == '{') || (ch == ']' && st.peek() == '[' ) || ( ch == ')' && st.peek() == '(')) {
+            else if ( ( st.peek() == '{' && ch == '}' ) || ( st.peek() == '[' && ch == ']' ) || ( st.peek() == '(' && ch == ')' ) ) {
                 st.pop();
+            }
+            else if ( ( ch == '}' ) || (  ch == ']' ) || ( ch == ')' ) ) {
+                return false;
             }
             else {
                 st.push(ch);

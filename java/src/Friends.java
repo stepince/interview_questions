@@ -7,7 +7,6 @@ import java.util.*;
     Amazon interview question.
     Find intermediate friends.
     Degrees of separation
-
  */
 public class Friends {
 
@@ -28,15 +27,13 @@ public class Friends {
                 return;
             }
             String person = friendList[0].trim();
-            friendsMap.putIfAbsent(person, new HashSet<>());
-            friendsMap.get(person).addAll(Arrays.asList(friendList[1].trim().split("\\s*,\\s*")));
+            friendsMap.computeIfAbsent(person, (k)-> new HashSet<>()).addAll(Arrays.asList(friendList[1].trim().split("\\s*,\\s*")));
             for( String friend: friendsMap.get(person)) {
-                friendsMap.putIfAbsent(friend, new HashSet<>());
-                friendsMap.get(friend).add(person);
+                friendsMap.computeIfAbsent(friend, (k)-> new HashSet<>()).add(person);
             }
         });
         if ( this.friendsMap.size() == 0 ) {
-            System.err.println("Invalid input file: no cites, ConnectedCities.txt");
+            System.err.println("Invalid input file: no cites, Friends.txt");
         }
     }
     public Set<String> getFriends(String person){
@@ -45,8 +42,8 @@ public class Friends {
 
     // dfsVisit
     public boolean findIntermediateFriendsUtil(String personA, String personB, Stack<String> path, Set<String> visited){
-        path.push(personA);
         visited.add(personA);
+        path.push(personA);
         for ( String friend: getFriends(personA) ){
              if ( personB.equals(friend)) return true;
              if ( visited.contains(friend)) continue;

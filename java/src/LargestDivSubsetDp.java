@@ -37,10 +37,10 @@ public class LargestDivSubsetDp {
         return b.size() > a.size() ? b : a;
     }
 
-    private static List<Integer> find(int[] arr, int idx, Map<String, List<Integer>> mem){
+    private static List<Integer> find(int[] arr, int idx, Map<Integer, List<Integer>> mem){
         if ( idx == 0 ) return new ArrayList<>();
-        String key = String.valueOf(idx);
-        if ( mem.containsKey(key) ) return new ArrayList<>(mem.get(key));
+
+        if ( mem.containsKey(idx) ) return new ArrayList<>(mem.get(idx));
         List<Integer> maxList = new ArrayList<>();
         for ( int i = idx; i > 0 ; --i ){
             List<Integer> l = find(arr, i-1, mem);
@@ -49,7 +49,7 @@ public class LargestDivSubsetDp {
             }
             maxList = maxList(maxList, l);
         }
-        mem.put(key, new ArrayList<>(maxList));
+        mem.put(idx, new ArrayList<>(maxList));
         return maxList;
     }
 

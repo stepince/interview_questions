@@ -62,10 +62,9 @@ public class SortLogLines {
             else if ( isAlphaNumericA ){
                 return -1;
             }
-            else if ( isAlphaNumericB ){
-                return 1;
+            else {
+                return isAlphaNumericB ? 1: 0;
             }
-            return 0;
         }
     }
     public static void main(String[] args) throws Exception {

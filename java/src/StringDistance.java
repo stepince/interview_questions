@@ -24,12 +24,7 @@ public class StringDistance {
 
     private static Integer find(String word1, String word2, int idx1, int idx2){
 
-        if ( idx1 == 0 ){
-            return idx2;
-        }
-        if ( idx2 == 0 ){
-            return idx1;
-        }
+        if ( idx1 == 0 || idx2 == 0) return Math.abs( idx1 - idx2 );
 
         // same just increase;
         if ( word1.charAt(idx1-1) == word2.charAt(idx2-1) ) {

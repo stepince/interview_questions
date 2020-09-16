@@ -1,17 +1,17 @@
 import java.util.HashMap;
 import java.util.Map;
 
-public class SuffixTrie {
+public class SuffixTree {
 
-    final private Map<Character,SuffixTrie> map = new HashMap<>();
+    final private Map<Character, SuffixTree> map = new HashMap<>();
 
-    private SuffixTrie(){}
+    private SuffixTree(){}
 
     public String toString(){
         return this.map.toString();
     }
 
-    public SuffixTrie(String str){
+    public SuffixTree(String str){
         str += "$";
         char[] array = str.toCharArray();
         for ( int i = 0; i < array.length; ++i ){
@@ -19,11 +19,9 @@ public class SuffixTrie {
         }
     }
 
-    private void add(SuffixTrie trie, char[] array, int idx){
+    private void add(SuffixTree trie, char[] array, int idx){
         char ch = array[idx];
-        if ( !trie.map.containsKey(ch) ){
-            trie.map.put(ch, new SuffixTrie());
-        }
+        trie.map.putIfAbsent(ch,  new SuffixTree());
         if( idx + 1 < array.length ) {
             add(trie.map.get(ch),array, idx+1);
         }
@@ -31,7 +29,7 @@ public class SuffixTrie {
 
     public static void main(String[] args){
         String str = args[0].trim();
-        SuffixTrie trie  = new SuffixTrie(str);
+        SuffixTree trie  = new SuffixTree(str);
         System.out.println(trie);
     }
 }

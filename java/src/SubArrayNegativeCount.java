@@ -1,72 +1,102 @@
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Stream;
+//import java.util.*;
 
 /*
+
+Note: This is really a hard problem, to solve under n^2. I would not study this problem.
 find the number of sub-arrays of having negative sums.
 input: 1 -2 4 -5 1
 
 output: 9
-1 -2 4 -5 1
-2
--1 -1 1
-2
--2 1
-1
--1
-1
+[1, -2, 4, -5, 1]
+[-2, 4, -5, 1]
+[-5, 1]
+[1, -2, 4, -5]
+[-2, 4, -5]
+[4, -5]
+[-5]
+[1, -2]
+[-2]
+9
+
 
  */
 public class SubArrayNegativeCount {
 
 
-    private static int find(int[] arr, int idx, int total, int startIdx, Set<String> mem){
-        String key = startIdx + ":" + idx;
-        if ( mem.contains(key) || idx >= arr.length ) return 0;
-        mem.add(key);
-        total += arr[idx];
-
-        if ( total == 0 ) {
-            return find(arr,idx+1, total, startIdx,mem);
-        }
-        int incr = total < 0 ? 1 : 0;
-
-        return incr +
-                find(arr,idx+1, total, startIdx,mem) +
-                find(arr,idx+1, 0, idx+1,mem);
-    }
-    public static int find(int[] arr){
-        return find(arr,0, 0,0, new HashSet<>()) ;
-    }
-
-    private static int find2(int[] arr, int length){
-        int count = 0;
-        if ( length == 0 ) return 0;
-        if ( length == 1 ) return arr[0] < 0 ? 2 : 0;
-        for ( int i = 0; i < length; ++i){
-            if ( arr[i] < 0 ) ++count;
-        }
-
-        for ( int i = 0, j = 0; i < length; ++i, ++j){
-            if ( i < arr.length -1 ) {
-                arr[j] = arr[i] + arr[++i];
-                if ( arr[j] < 0) ++count;
+    public static int merge(int[] arr, int left1, int right1, int left2, int right2) {
+        int[] temp = new int[right2 - left1 + 1];
+        int index1 = left1;
+        int index2 = left2;
+        int temp_index = 0;
+        int inversion_count = 0;
+        while(index1 <= right1 && index2 <= right2) {
+            if(arr[index1] <= arr[index2]) {
+                temp[temp_index] = arr[index1];
+                index1++;
+                temp_index++;
             }
             else {
-                arr[j] = arr[i];
+                //In this case we add to our inversion count:
+                inversion_count += right1 - index1 + 1;
+                temp[temp_index] = arr[index2];
+                index2++;
+                temp_index++;
             }
         }
-        count += find2( arr, (int)Math.ceil(length/2));
-        return count;
+
+        while(index1 <= right1) {
+            temp[temp_index] = arr[index1];
+            index1++;
+            temp_index++;
+        }
+
+        while(index2 <= right2) {
+            temp[temp_index] = arr[index2];
+            index2++;
+            temp_index++;
+        }
+
+        if (temp.length >= 0) System.arraycopy(temp, 0, arr, left1, temp.length);
+
+        return inversion_count;
     }
 
-    public static int find2(int[] arr){
-        return find2(arr,arr.length) ;
+    public static int findNegativeSubarrays(int[] arr, int left, int right) {
+        if(right < left) {
+            return 0;
+        }
+        if(right == left) {
+            if(arr[left] < 0) {
+                return 1;
+            }
+            else{
+                return 0;
+            }
+        }
+
+        int mid = (left + right)/2;
+        int num1 = findNegativeSubarrays(arr, left, mid);
+        int num2 = findNegativeSubarrays(arr, mid+1, right);
+        int num3 = merge(arr, left, mid, mid+1, right);
+
+        return num1 + num2 + num3;
+    }
+
+    public static int find(int[] arr){
+        int[] accumulator = new int[arr.length];
+        accumulator[0] = arr[0];
+        for(int i = 1; i < arr.length; i++) {
+            accumulator[i] = accumulator[i-1] + arr[i];
+        }
+
+        return findNegativeSubarrays(accumulator, 0, arr.length-1);
     }
 
     public static void main(String[] args){
-       int[] arr = Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
-       System.out.println(find(arr));
-       System.out.println(find2(arr));
+//       int[] arr = Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+        int[] arr = {1, -2, 4, -5, 1};
+
+        System.out.println(find(arr));
+
     }
 }

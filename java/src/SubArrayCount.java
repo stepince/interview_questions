@@ -1,6 +1,6 @@
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
+//import java.util.stream.Stream;
 
 /*
 *  number of subarrays that equal sum
@@ -20,18 +20,19 @@ public class SubArrayCount {
         int count = 0;
         for( int num : arr ){
             accSum += num;
-            if ( accSum == sum ){
-               ++count;
-            }
+            if ( accSum == sum ) ++count;
             count += prefixMap.getOrDefault(accSum - sum,0 );
-            prefixMap.put(accSum,prefixMap.getOrDefault(accSum,0)+1 );
+            //increment
+            prefixMap.merge(accSum,1,Integer::sum);
         }
         return count;
     }
 
     public static void main(String[] args){
-        int[] arr = Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
-        int sum = Integer.parseInt(args[1]);
+//        int[] arr = Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+//        int sum = Integer.parseInt(args[1]);
+        int[] arr = {1,20,20,-10,-10,20,3};
+        int sum = 40;
         System.out.println(find(arr,sum));
     }
 }

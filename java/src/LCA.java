@@ -39,8 +39,7 @@ public class LCA {
 
         int lca = root.value;
         while( !dq1.isEmpty() && !dq2.isEmpty() && dq1.peek().equals(dq2.peek()) ){
-            lca = dq1.peek().value;
-            dq1.remove();
+            lca = dq1.remove().value;
             dq2.remove();
         }
         return lca;

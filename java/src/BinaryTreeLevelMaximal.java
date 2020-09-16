@@ -30,17 +30,17 @@ public class BinaryTreeLevelMaximal {
         int level = 1;
         int maxLevel = 1;
         while( !queue.isEmpty() ){
-            int levelSize = queue.size();
+            int size = queue.size();
             int curr = 0;
-            while ( levelSize > 0 ){
+            while ( size-- > 0 ){
                 Node node = queue.remove();
                 if ( node.left!= null) queue.add(node.left);
                 if ( node.right!= null) queue.add(node.right);
                 curr += node.value;
-                if ( --levelSize == 0 && curr > max ){
-                    max = curr;
-                    maxLevel = level;
-                }
+            }
+            if ( curr > max ){
+                max = curr;
+                maxLevel = level;
             }
             ++level;
         }
@@ -49,12 +49,15 @@ public class BinaryTreeLevelMaximal {
      public static void main(String[] args){
 
          /* Construct tree
-                  1
+                 1
                /    \
              2       3
             / \     / \
            4   5   6   7
-
+                      /  \
+                     5    30
+                           \
+                           34
          */
          Node root = new Node(1);
          root.left = new Node(2);
@@ -66,6 +69,7 @@ public class BinaryTreeLevelMaximal {
          root.right.right.right = new Node(30);
          root.right.right.left = new Node(5);
          root.right.right.right.right = new Node(34);
+         // return level 4
          System.out.println( "level: " + find(root));
      }
 

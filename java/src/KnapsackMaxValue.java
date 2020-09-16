@@ -11,8 +11,11 @@ You cannot break an item, either pick the complete item, or don�t pick it (0-1
 
 java KnapsackMaxValue "60 100 120" "10 20 30" 50
 answer: 220
+
+    O(2^n)
+    where is the number of weights
 */
-import java.util.stream.Stream;
+//import java.util.stream.Stream;
 
 public class KnapsackMaxValue {
 
@@ -24,20 +27,21 @@ public class KnapsackMaxValue {
         if ( weight <= 0 || idx == wts.length ) return 0;
         // just run the exclude part if we can not include it
         // we can not include it.
-        if ( wts[idx] > weight ){
-            return find(wts, values, weight, idx+1);
-        }
-        int exclude = find(wts, values, weight,idx+1);
+        if ( wts[idx] > weight ) return find(wts, values, weight, idx+1);
         // the check for inclusion total has been done, so it is ok to include total
-        int include = values[idx] + find(wts, values,weight-wts[idx], idx+1);
-        return Math.max(include,exclude);
+        return Math.max(values[idx] + find(wts, values,weight-wts[idx], idx+1),find(wts, values, weight,idx+1));
     }
 
     public static void main(String[] args) {
-        int[] values = Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
-        int[] wts = Stream.of(args[1].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
-        int max = Integer.parseInt(args[2]);
-        System.out.println(find(wts, values, max));
+//        int[] values = Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+//        int[] wts = Stream.of(args[1].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+//        int weight = Integer.parseInt(args[2]);
+
+        int[] values = {60,100,120};
+        int[] wts = {10,20,30};
+        int weight = 50;
+
+        System.out.println(find(wts, values, weight));
     }
 
 }

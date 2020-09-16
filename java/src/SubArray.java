@@ -1,7 +1,10 @@
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
+/*
+ sub array sum
 
+ */
 public class SubArray {
 
     public static boolean find(int[] arr, int sum){

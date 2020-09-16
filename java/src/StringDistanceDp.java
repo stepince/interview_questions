@@ -17,18 +17,13 @@ O(N^2)
  */
 public class StringDistanceDp {
 
-    // handle null cases
     static private int min( int a, int b , int c){
         return Math.min(a, Math.min(b,c));
     }
 
     static private Integer find(String word1, String word2, int idx1, int idx2, Map<String,Integer> mem){
-        if ( idx1 == 0 ){
-            return idx2;
-        }
-        if ( idx2 == 0 ){
-            return idx1;
-        }
+
+        if ( idx1 == 0 || idx2 == 0 ) return Math.abs(idx1-idx2);
 
         String key = idx1 + ":" + idx2;
         if ( mem.containsKey(key) ) return mem.get(key);

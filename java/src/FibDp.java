@@ -24,16 +24,18 @@ public class FibDp {
         int val = fib(n-1,mem) + fib(n-2,mem);
         mem.put(n,val);
         return val;
+//        return mem.merge(n,val,(prev,curr)->curr);
     }
 
     static int fib2(int n, Map<Integer,Integer> mem) {
-        mem.put(1,0);
-        mem.put(2,1);
         return mem.computeIfAbsent(n, (key)->fib2(n-1)+fib2(n-2));
     }
 
     public static int fib2(int n ) {
-        return fib2(n, new HashMap<>());
+        Map<Integer,Integer> mem = new HashMap<>();
+        mem.put(1,0);
+        mem.put(2,1);
+        return fib2(n, mem);
     }
 
     public static int fib(int n ) {
@@ -44,7 +46,10 @@ public class FibDp {
         //int num = Integer.parseInt(args[0]);
         int num = 7;
         System.out.println(fib(num));
+
+        long t = System.currentTimeMillis();
         System.out.println(fib2(num));
+        System.out.println("time: " + ( System.currentTimeMillis() - t));
     }
 
 }

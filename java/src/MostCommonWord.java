@@ -15,7 +15,8 @@ public class MostCommonWord {
         for ( String word: words ){
             word = word.trim();
             if ( word.length() == 0 || BANNED_WORDS.contains(word) ) continue;
-            freq.put( word, freq.getOrDefault(word,0)+1);
+//            freq.put( word, freq.getOrDefault(word,0)+1);
+            freq.merge(word, 1, Integer::sum);
             if ( freq.get(word) > freq.getOrDefault(maxWord,0) ) {
                 maxWord = word;
             }
@@ -29,7 +30,9 @@ public class MostCommonWord {
         URL url = classLoader.getResource("MostCommonWord.txt");
         assert url != null;
         List<String> lines = Files.readAllLines(Paths.get(url.toURI()));
+        long t = System.currentTimeMillis();
         String paragraph = String.join(System.lineSeparator(),lines);
         System.out.println(find(paragraph));
+        System.out.println("time: " + ( System.currentTimeMillis() - t));
     }
 }

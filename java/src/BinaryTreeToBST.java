@@ -43,15 +43,13 @@ public class BinaryTreeToBST {
         Queue<Node> queue = new LinkedList<>();
         queue.add(root);
         while(!queue.isEmpty()){
-            int levelSize = queue.size();
             String sep = "";
-            while( levelSize > 0 ) {
+            for(int levelSize = queue.size();  levelSize > 0; --levelSize ) {
                 Node node = queue.remove();
                 System.out.print(sep + node.value);
                 sep = " ";
                 if (node.left != null) queue.add(node.left);
                 if (node.right != null) queue.add(node.right);
-                --levelSize;
             }
             System.out.println();
         }

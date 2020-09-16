@@ -4,6 +4,8 @@
    java Fib 4 
    output: 2
 
+Time:
+   O(2*n)
 */
 
 public class Fib {

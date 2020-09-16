@@ -1,9 +1,14 @@
 import java.util.*;
 /*
+
+  Find K largest elements.
   Time:
      O(nlgk)
+
+   Algorithm:
+      Use a min queue
  */
-public class KLargest {
+public class KLargestElements {
 
     public static List<Integer> find(int[] arr, int k){
         if ( k <= 0 ) return null;
@@ -14,6 +19,7 @@ public class KLargest {
         }
         return new ArrayList<>(queue);
     }
+
     public static void main(String[] args){
         int[] arr = Arrays.stream(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
         int k = Integer.parseInt(args[1]);

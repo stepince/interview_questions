@@ -1,6 +1,6 @@
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+//import java.util.stream.Collectors;
+//import java.util.stream.Stream;
 
 /*
   A, B, C
@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  */
 public class PrintSubArrays {
 
-    public static void print(List<Character> arr, int begin, int end){
+    public static void print(List<?> arr, int begin, int end){
         if ( begin == arr.size() ) return;
         if ( begin == end ) {
             print(arr, 0, end + 1);
@@ -26,11 +26,11 @@ public class PrintSubArrays {
         }
     }
 
-    public static void print(List<Character> arr ){
+    public static void print(List<?> arr ){
         print(arr,0,1);
     }
 
-    public static void print2(List<Character> arr ){
+    public static void print2(List<?> arr ){
         for ( int i = 0; i < arr.size() ; ++i ){
             int end = arr.size() - i;
             System.out.println(arr.subList(0,end));
@@ -42,7 +42,8 @@ public class PrintSubArrays {
 
     public static void main(String[] args){
         // string to char
-        List<Character> arr = Stream.of(args[0].split("\\s*,\\s*")).map(x->x.charAt(0)).collect(Collectors.toList());
+//        List<Character> arr = Stream.of(args[0].split("\\s*,\\s*")).map(x->x.charAt(0)).collect(Collectors.toList());
+        List<Integer> arr = List.of( 1, -2,  4, -5, 1  );
         print(arr);
         System.out.println("------------");
         print2(arr);

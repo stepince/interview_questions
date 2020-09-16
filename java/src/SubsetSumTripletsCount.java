@@ -13,17 +13,15 @@ public class SubsetSumTripletsCount {
 
     public static int find2( int[] arr, int sum ){
         int count = 0;
-        for ( int i = 0; i < arr.length-2; ++i ){
-            Set<Integer> s = new HashSet<>();
-            int subtotal1 = sum - arr[i];
+        Set<Integer> s = new HashSet<>();
+        for ( int i = 0; i < arr.length-1; ++i ){
             for ( int j = i + 1; j < arr.length; ++j ){
-                int subtotal2 = subtotal1 - arr[j];
-                if ( s.contains(subtotal2) ) {
-                    System.out.printf("Triplet is %d, %d, %d\n", arr[i], arr[j], subtotal2);
+                if ( s.contains(arr[i] + arr[j]) ) {
+                    System.out.printf("Triplet is %d, %d, %d\n", arr[i], arr[j], sum - (arr[i] + arr[j]) );
                     ++count;
                 }
-                s.add(arr[j]);
             }
+            s.add(sum-arr[i]);
         }
         return count;
     }
@@ -63,8 +61,11 @@ public class SubsetSumTripletsCount {
 //        int[] arr = {12, 3, 6, 1, 6, 9};
 //        int sum =  24;
 
-        int[] arr = {5, 7, 13};
-        int sum =  25;
+//        int[] arr = {5, 7, 13};
+//        int sum =  25;
+
+        int[] arr = {8,6,5,1};
+        int sum = 15;
         System.out.println(find1(arr,sum));
         System.out.println(find2(arr,sum));
     }

@@ -1,5 +1,5 @@
 
-import java.util.stream.Stream;
+//import java.util.stream.Stream;
 /*
  *  Count the number of inversions
  *
@@ -30,7 +30,7 @@ public class InversionCount {
 
         // process merge into temp result
         for ( i = begin ; leftIdx < mid && rightIdx < end; ++i ){
-            if ( arr[leftIdx] > arr[rightIdx] ){
+            if ( arr[rightIdx] < arr[leftIdx] ){
                 // increment by the diff of current leftIdx and middle
                 // note: the only line that has the additional functionality from mergesort
                 count += (mid-leftIdx);
@@ -49,18 +49,21 @@ public class InversionCount {
             temp[i] = arr[rightIdx++];
         }
         // copy temp values to arr array
-        for ( i = begin; i < end ; ++i ){
-            arr[i] = temp[i];
-        }
+        System.arraycopy(temp,begin,arr,begin,end-begin);
         return count;
     }
 
     static int mergeCount(int[] arr, int begin, int end, int[] temp){
-        if ( end - begin <= 1 ) return 0;
-        int m = (begin + end)/2;
-        int leftCount = mergeCount(arr,begin,m,temp);
-        int rightCount = mergeCount(arr,m,end,temp);
-        return leftCount + rightCount + merge( arr, begin, m, end, temp);
+        // if 2 or more
+        if ( begin + 1 < end ) {
+            int m = (begin + end) / 2;
+            int leftCount = mergeCount(arr, begin, m, temp);
+            int rightCount = mergeCount(arr, m, end, temp);
+            return leftCount + rightCount + merge(arr, begin, m, end, temp);
+        }
+        else {
+            return 0;
+        }
     }
 
     public static int mergeCount(int[] arr){
@@ -69,9 +72,9 @@ public class InversionCount {
     }
 
     public static void main(String[] args){
-        int[] arr = Stream.of(args[0].split("[, ]+")).mapToInt(Integer::parseInt).toArray();
-        // arr = new int[]{3,1,2};
-        // arr = new int[]{1, 9, 6, 4, 5};
+//        int[] arr = Stream.of(args[0].split("[, ]+")).mapToInt(Integer::parseInt).toArray();
+//         int[] arr = new int[]{3,1,2};
+         int[] arr = new int[]{1, 9, 6, 4, 5};
         System.out.println(mergeCount(arr));
     }
 }

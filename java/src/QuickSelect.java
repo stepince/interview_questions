@@ -23,6 +23,8 @@ public class QuickSelect {
     private static void quickSelect(int[] arr, int begin, int end, int k){
         if ( begin < end ) {
             int pivotIdx = partition(arr,begin,end);
+//          Top elements
+//            if ( (arr.length - k) < pivotIdx ) {
             if ( pivotIdx < k ) {
                 quickSelect(arr, begin, pivotIdx - 1, k);
             }
@@ -36,8 +38,11 @@ public class QuickSelect {
     }
 
     public static void main(String[] args){
-        int[] arr = Arrays.stream(args[0].split("[,\\s]+")).mapToInt(Integer::parseInt).toArray();
-        int k = Integer.parseInt(args[1]);
+//        int[] arr = Arrays.stream(args[0].split("[,\\s]+")).mapToInt(Integer::parseInt).toArray();
+//        int k = Integer.parseInt(args[1]);
+
+        int[] arr = new int[]{1, 9, 6, 4, 5};
+        int k = 2;
         System.out.println(Arrays.toString(find(arr, k)));
     }
 }

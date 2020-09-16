@@ -19,12 +19,14 @@ public class ClosestPair {
               int pairTotal = arr[l] + arr[r];
               // found
               if ( pairTotal == total ) return Arrays.asList(arr[l],arr[r]);
-              if ( Math.abs(total - pairTotal) < currentDiff ){
+
+              int diff = Math.abs(total - pairTotal);
+              if ( diff < currentDiff ){
                   left = l;
                   right = r;
-                  currentDiff = Math.abs(total - pairTotal);
+                  currentDiff = diff;
               }
-              else if ( pairTotal > total ){
+              if ( pairTotal > total ){
                   --r;            
               }
               else{
@@ -39,7 +41,7 @@ public class ClosestPair {
 //        int total = Integer.parseInt(args[1]);
 
          int[] arr = {2,44,6,7,8,9};
-         int total = 50;
+         int total = 49;
          System.out.println(find(arr,total));
      }
 }

@@ -13,18 +13,18 @@ Time:
   where N is the number of words A and is the size of the alphabet
 Space:
   O(V+E)  ( The sum of the all the characters )
+
+  Topological sorting
  */
 
 public class AlienDictionary {
 
     Map<Character,Set<Character>> vertices = new HashMap<>();
-
     public void add(Character ch1, Character ch2) {
-        vertices.putIfAbsent(ch1, new HashSet<>());
-        vertices.get(ch1).add(ch2);
+        vertices.computeIfAbsent(ch1, (key)->new HashSet<>()).add(ch2);
     }
 
-    void dfs( List<Character> l ){
+    void dfs( Deque<Character> l ){
         Set<Character> visited = new HashSet<>();
         for ( Character node : vertices.keySet() ){
             if ( !visited.contains(node) ){
@@ -33,21 +33,20 @@ public class AlienDictionary {
         }
     }
 
-    void dfsVisit( Character node, Set<Character> visited, List<Character> l){
+    void dfsVisit( Character node, Set<Character> visited, Deque<Character> l){
         visited.add(node);
         for ( Character child : vertices.getOrDefault(node,Collections.emptySet() ) ){
             if ( !visited.contains(child) ){
                 dfsVisit(child,visited,l);
             }
         }
-        l.add(node);
+        l.addFirst(node);
     }
 
     /* return the alphabet in sorted order */
     public List<Character> topSort(){
-        List<Character> l = new ArrayList<>();
+        LinkedList<Character> l = new LinkedList<>();
         dfs(l);
-        Collections.reverse(l);
         return l;
     }
 
@@ -70,8 +69,10 @@ public class AlienDictionary {
     public static void main(String[] args){
         AlienDictionary alienDictionary = new AlienDictionary();
         //List<String> words = Arrays.asList(args);
+        long t = System.currentTimeMillis();
         List<String> words = Arrays.asList("bgg", "fbg", "fqf", "ffq", "gfg");
         alienDictionary.addWords(words);
         System.out.println(alienDictionary.topSort());
+        System.out.println("time: " + ( System.currentTimeMillis() - t));
     }
 }

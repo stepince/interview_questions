@@ -1,5 +1,13 @@
 import java.util.*;
+/*
 
+
+Time:
+   O(NlogK)
+
+Space:
+   O(N)
+ */
 public class TopK {
 
    private final static int K = 3;
@@ -14,7 +22,7 @@ public class TopK {
        Scanner s = new Scanner(args[0]);
        while( s.hasNext() ){
            String str = s.next();
-           m.put(str,m.getOrDefault(str,0)+1);
+           m.merge(str,1, Integer::sum);
        }
 
        Set<String> keys = m.keySet();
@@ -31,7 +39,7 @@ public class TopK {
                    l.clear();
                }
            }
-       }    
+       }
        for(String k: q) {
            System.out.println( k + " => " + m.get(k));
        } 

@@ -1,7 +1,7 @@
 import java.util.*;
 /*
 Time:
-   O(N + NLG)
+   O(N + NLGN)
 
 Space:
    O(N)
@@ -20,8 +20,7 @@ public class BinaryTreePrintVerticalOrder {
 
     static void printUtil(Node root, int level, Map<Integer,List<String>> map){
         if ( root == null ) return;
-        map.putIfAbsent(level, new ArrayList<>());
-        map.get(level).add(root.value);
+        map.computeIfAbsent(level, (key) -> new ArrayList<>()).add(root.value);
         printUtil(root.left,level-1, map);
         printUtil(root.right,level+1, map);
     }

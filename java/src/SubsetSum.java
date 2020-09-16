@@ -1,5 +1,5 @@
 import java.util.Arrays;
-import java.util.stream.Stream;
+
 /*
 
 Given a set of distinct integers, and a value m, determine if
@@ -37,9 +37,11 @@ public class SubsetSum {
     }
 
     public static void main(String[] args){
-        int[] arr = Stream.of(args[0].split("[,\\s]+")).mapToInt(Integer::parseInt).toArray();
-        int m = Integer.parseInt(args[1]);
-        System.out.println(find(arr,m));
+//        int[] arr = Stream.of(args[0].split("[,\\s]+")).mapToInt(Integer::parseInt).toArray();
+//        int m = Integer.parseInt(args[1]);
+        int[] arr = {8,2,1,2};
+        int sum = 5;
+        System.out.println(find(arr,sum));
     }
 
 }

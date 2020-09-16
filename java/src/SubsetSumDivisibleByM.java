@@ -17,7 +17,10 @@ O(n^2)
 
 notes: 0 % M is zero
 
+n > m then this is always a subset that is divisible, you really only need to check for the case
+n <= m
        subset is any list of any integers.
+
  */
 
 public class SubsetSumDivisibleByM {

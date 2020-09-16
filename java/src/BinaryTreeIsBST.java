@@ -23,8 +23,8 @@ public class BinaryTreeIsBST {
 
     public static boolean isBSTUtil(Node root, int min, int max){
         if ( root == null ) return true;
-        if ( root.value < min || root.value > max) return false;
-        return isBSTUtil(root.left,min,root.value-1) && isBSTUtil(root.right,root.value+1, max);
+        if ( root.value <= min || root.value >= max) return false;
+        return isBSTUtil(root.left,min,root.value) && isBSTUtil(root.right,root.value, max);
     }
 
     public static boolean isBSTUtil2(Node root, Container prev){
@@ -81,14 +81,14 @@ public class BinaryTreeIsBST {
         System.out.println(isBST2(root2));
         System.out.println("-------------------------------");
          /* Construct tree
-                 15
+                 18
                /    \
              5       30
            /   \    /   \
          3     15 20    45
          */
 
-        Node root3 = new Node(15);
+        Node root3 = new Node(18);
         root3.left = new Node(5);
         root3.right = new Node(30);
         root3.left.left = new Node(3);

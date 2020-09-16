@@ -36,6 +36,7 @@ public class CoinChange {
         int count = 0;
         // loop through each coin, decrement the total with each recursion
         for ( int i = idx; i < coins.length; ++i ) {
+            if ( coins[i] > n ) break;
             count +=makeChange2(n - coins[i], coins, i);
         }
         return count;
@@ -46,8 +47,10 @@ public class CoinChange {
     }
 
     public static void main( String[] args ) {
-        int[] coins = Arrays.stream(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
-        int n = Integer.parseInt(args[1]);
+//        int[] coins = Arrays.stream(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+//        int n = Integer.parseInt(args[1]);
+        int[] coins = { 50, 25, 10, 5, 1};
+        int n = 11;
         Arrays.sort( coins );
         System.out.println(makeChange( n, coins ));
         System.out.println(makeChange2( n, coins ));

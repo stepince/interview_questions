@@ -3,6 +3,7 @@ import java.util.List;
 /*
   create a iinkedlist inorder
 
+  flatten out the list into doublelinked list
   Time: O(N)
   Space: O(N)
 
@@ -52,18 +53,19 @@ public class BinaryTree2DoublyLinkedList {
     public static void main(String[] args){
 
          /* Construct tree
-                 10
-               /    \
-             12      15
+                 4
+               /   \
+             2       6
             / \     / \
-           25   5   6   7
+           1   3   5   7
          */
-        Node root1 = new Node(String.valueOf(10));
-        root1.left = new Node(String.valueOf(12));
-        root1.right = new Node(String.valueOf(15));
-        root1.left.left = new Node(String.valueOf(25));
-        root1.left.right = new Node(String.valueOf(30));
-        root1.right.left = new Node(String.valueOf(36));
+        Node root1 = new Node(String.valueOf(4));
+        root1.left = new Node(String.valueOf(2));
+        root1.right = new Node(String.valueOf(6));
+        root1.left.left = new Node(String.valueOf(1));
+        root1.left.right = new Node(String.valueOf(3));
+        root1.right.left = new Node(String.valueOf(5));
+        root1.right.right = new Node(String.valueOf(7));
 
         Node l = tree2LinkedList(root1);
         print(l);

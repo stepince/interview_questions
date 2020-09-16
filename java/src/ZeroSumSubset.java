@@ -13,19 +13,26 @@ import java.util.stream.Stream;
  */
 public class ZeroSumSubset {
 
-    private static boolean find(int[] arr, int idx, Integer sum ){
-        if ( sum == 0 ) return true;
-        if ( idx == 0 ) return false;
-        // you can add or subtract -7,7 or 0- (-7) - 7 == 0
-        return find(arr, idx-1, sum - arr[idx-1]) || find(arr, idx-1, sum);
+    public static Integer sum ( Integer a, Integer b ){
+        if ( a == null ) return b;
+        return a + b;
     }
+
+    private static boolean find(int[] arr, int idx, Integer total ){
+        if ( total != null && total == 0  ) return true;
+        if ( idx == arr.length ) return false;
+        return find(arr, idx+1, sum( total, arr[idx]) ) || find(arr, idx+1, total);
+    }
+
     public static boolean find(int[] arr) {
         if ( arr == null || arr.length == 0 ) return false;
-        int sum = Arrays.stream(arr).sum();
-        return find(arr, arr.length, sum);
+        return find(arr, 0, null);
     }
+
     public static void main(String[] args ){
-        int[] arr = Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+//        int[] arr = Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+
+        int[] arr = {8,2,1,-3};
         System.out.println(find(arr));
     }
 }

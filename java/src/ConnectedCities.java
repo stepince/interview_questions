@@ -43,8 +43,7 @@ public class ConnectedCities {
     private void addCityConnection(String start, String end ) {
         start = start.toLowerCase().trim();
         end = end.toLowerCase().trim();
-        cities.putIfAbsent(start,new HashSet<>());
-        cities.get(start).add(end);
+        cities.computeIfAbsent(start, k->new HashSet<>()).add(end);
     }
 
    /**
@@ -71,8 +70,10 @@ public class ConnectedCities {
     }
 
     public static void main( String[] args ) throws Exception {
-        String start = args[0].toLowerCase().trim();
-        String end = args[1].toLowerCase().trim();
+//        String start = args[0].toLowerCase().trim();
+//        String end = args[1].toLowerCase().trim();
+        String start = "nyc";
+        String end = "la";
         ConnectedCities connectedCities = new ConnectedCities();
         if ( connectedCities.isConnected( start, end) ) {
             System.out.println("yes");

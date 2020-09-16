@@ -32,7 +32,7 @@ Ans: 6
 
      public static int find( int[] arr){
         return find( arr, arr.length, Integer.MAX_VALUE, new HashMap<>());
-    }
+     }
 
      public static void main(String[] args) {
          int[] arr = Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
