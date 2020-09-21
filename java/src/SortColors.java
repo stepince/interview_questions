@@ -17,24 +17,21 @@ public class SortColors {
     static public void sortColors(int[] nums) {
         int reds = 0;
         int whites = 0;
-        for (int num : nums) {
-            if ( num == 0 ) {
-                ++reds;
-            }
-            else if (num == 1) {
-                ++whites;
-            }
+        for ( int num : nums ) {
+            reds += ( num == 0 ? 1 : 0);
+            whites += ( num == 1 ? 1 : 0);
         }
-        for ( int red = 0; red < reds;++red){
+        for ( int red = 0; red < reds; ++red){
             nums[red] = 0;
         }
-        for ( int white = 0; white < whites;++white){
-            nums[reds+white] = 1;
+        for ( int white = reds; white < whites+reds; ++white){
+            nums[white] = 1;
         }
-        for ( int blue = 0; blue < nums.length - (reds+whites); ++blue){
-            nums[reds+whites+blue] = 2;
+        for ( int blue = reds+whites; blue < nums.length; ++blue){
+            nums[blue] = 2;
         }
     }
+
     public static void main(String[] args){
         int[] nums = {2,0,1,1, 0,2};
         sortColors(nums);
