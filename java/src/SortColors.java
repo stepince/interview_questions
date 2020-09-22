@@ -21,15 +21,9 @@ public class SortColors {
             reds += ( num == 0 ? 1 : 0);
             whites += ( num == 1 ? 1 : 0);
         }
-        for ( int red = 0; red < reds; ++red){
-            nums[red] = 0;
-        }
-        for ( int white = reds; white < whites+reds; ++white){
-            nums[white] = 1;
-        }
-        for ( int blue = reds+whites; blue < nums.length; ++blue){
-            nums[blue] = 2;
-        }
+        for ( int red = 0; red < reds; ++red) nums[red] = 0;
+        for ( int white = reds; white < whites+reds; ++white) nums[white] = 1;
+        for ( int blue = reds+whites; blue < nums.length; ++blue) nums[blue] = 2;
     }
 
     public static void main(String[] args){
