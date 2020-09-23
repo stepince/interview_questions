@@ -49,20 +49,12 @@ public class CdPlayer {
             Collections.swap(copy, i ,  j );
         }
 
-        for ( int i = 0, j=0; i < size; ){
+        for ( int i = 0, j = 0; i < size; ++j ){
             Song a = songs.get(i);
             Song b = copy.get(j%size);
-            if ( b == null ){
-                ++j;
-            }
-            else if ( !a.equals(b) ){
-                songs.set(i,b);
+            if ( b != null && !a.equals(b) ){
+                songs.set(i++,b);
                 copy.set(j%size,null);
-                ++j;
-                ++i;
-            }
-            else {
-                ++j;
             }
         }
     }
