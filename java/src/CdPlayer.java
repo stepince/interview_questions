@@ -1,10 +1,18 @@
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+/*
 
+   Google interview guarantee the songs are shuffled
+
+ */
 public class CdPlayer {
 
-    private Boolean on = true;
+    List<Song> songs;
+
+    public CdPlayer(List<Song> songs){
+        this.songs = songs;
+    }
     static class Song {
         final private String name;
         public Song(String name){
@@ -13,68 +21,57 @@ public class CdPlayer {
         public String toString(){
             return this.name;
         }
-    }
 
-    public synchronized  void play(Song s){
-        assert s != null;
-    }
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Song song = (Song) o;
+            return Objects.equals(name, song.name);
+        }
 
-    private void shuffle( List<Song> songs ){
-        Random rand = new Random();
-        int size = songs.size();
-        for ( int i = 0; i < songs.size(); ++i ){
-            Collections.swap(songs, i ,  (int)(i + (rand.nextFloat() * size )) % size );
+        @Override
+        public int hashCode() {
+            return Objects.hash(name);
         }
     }
 
-    public void stop(){
-        this.on = false;
+    public List<Song> getSongs(){
+        return this.songs;
     }
 
-    public void playAll(List<Song> songs){
-        this.on = true;
-        outer: while(true) {
-            shuffle(songs);
-            for (Song song : songs) {
-                synchronized (this) {
-                    if (!this.on) break outer;
-                }
-                play(song);
+    public void shuffle(){
+        Random rand = new Random();
+        int size = songs.size();
+        List<Song> copy = new ArrayList<>(songs);
+        for ( int i = 0; i < size; ++i ){
+            int j = (int)(i + (rand.nextFloat() * size )) %size;
+            Collections.swap(copy, i ,  j );
+        }
+
+        for ( int i = 0, j=0; i < size; ){
+            Song a = songs.get(i);
+            Song b = copy.get(j%size);
+            if ( b == null ){
+                ++j;
+            }
+            else if ( !a.equals(b) ){
+                songs.set(i,b);
+                copy.set(j%size,null);
+                ++j;
+                ++i;
+            }
+            else {
+                ++j;
             }
         }
     }
 
     public static void main(String[] args){
         var songs = Stream.of("one","two","three","four","five","six","seven","eight","nine","ten").map(Song::new).collect(Collectors.toList());
-        CdPlayer cdPlayer = new CdPlayer();
-        new Thread(() -> cdPlayer.playAll(songs)).start();
-        try {
-            Thread.sleep(1000);
-        }
-        catch( Exception e){
-            System.err.println(e.toString());
-        }
-        cdPlayer.stop();
+        CdPlayer cdPlayer = new CdPlayer(songs);
         System.out.println(songs);
+        cdPlayer.shuffle();
+        System.out.println(cdPlayer.getSongs());
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
