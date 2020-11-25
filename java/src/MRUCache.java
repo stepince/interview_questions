@@ -14,7 +14,8 @@ public class MRUCache {
     int counter;
 
     Map<String,Integer> mruMap = new HashMap<>();
-    Queue<String> minQueue = new PriorityQueue<>( (a, b)->mruMap.get(a) - mruMap.get(b));
+//    Queue<String> minQueue = new PriorityQueue<>( (a, b)->mruMap.get(a) - mruMap.get(b));
+    Queue<String> minQueue = new PriorityQueue<>(Comparator.comparingInt(a -> mruMap.get(a)));
     Queue<String> maxQueue = new PriorityQueue<>( (a, b)->mruMap.get(b) - mruMap.get(a));
     public MRUCache(int capactiy){
         this.capacity=capactiy;
@@ -26,7 +27,7 @@ public class MRUCache {
 
     List<String> values(){
         List<String> results = new ArrayList<>(maxQueue);
-        Collections.sort(results, (a,b)->mruMap.get(b) - mruMap.get(a) );
+        results.sort((a, b) -> mruMap.get(b) - mruMap.get(a));
         return results;
     }
 
@@ -50,5 +51,6 @@ public class MRUCache {
         mruCache.add("google");
         mruCache.add("facebook");
         System.out.println(mruCache.values());
+        System.out.println(mruCache.peek());
     }
 }
