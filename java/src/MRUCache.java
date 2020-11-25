@@ -9,6 +9,7 @@ import java.util.*;
 
 public class MRUCache {
 
+
     int capacity;
     int counter;
 
