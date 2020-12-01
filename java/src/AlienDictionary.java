@@ -31,6 +31,7 @@ public class AlienDictionary {
         results.addFirst(node);
     }
 
+    
     /* return the alphabet in sorted order */
     public List<Character> topSort(){
         LinkedList<Character> results = new LinkedList<>();
