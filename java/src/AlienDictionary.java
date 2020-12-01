@@ -19,35 +19,25 @@ Space:
 
 public class AlienDictionary {
 
-    Map<Character,Set<Character>> vertices = new HashMap<>();
+    Map<Character,Set<Character>> graph = new HashMap<>();
     public void add(Character ch1, Character ch2) {
-        vertices.computeIfAbsent(ch1, (key)->new HashSet<>()).add(ch2);
+        graph.computeIfAbsent(ch1, (key)->new HashSet<>()).add(ch2);
     }
 
-    void dfs( Deque<Character> l ){
-        Set<Character> visited = new HashSet<>();
-        for ( Character node : vertices.keySet() ){
-            if ( !visited.contains(node) ){
-                dfsVisit(node,visited,l);
-            }
+    void topSortUtil( Character node, Deque<Character> results){
+        for ( Character child : graph.getOrDefault(node,Collections.emptySet() ) ){
+            topSortUtil(child,results);
         }
-    }
-
-    void dfsVisit( Character node, Set<Character> visited, Deque<Character> l){
-        visited.add(node);
-        for ( Character child : vertices.getOrDefault(node,Collections.emptySet() ) ){
-            if ( !visited.contains(child) ){
-                dfsVisit(child,visited,l);
-            }
-        }
-        l.addFirst(node);
+        results.addFirst(node);
     }
 
     /* return the alphabet in sorted order */
     public List<Character> topSort(){
-        LinkedList<Character> l = new LinkedList<>();
-        dfs(l);
-        return l;
+        LinkedList<Character> results = new LinkedList<>();
+        for( Character node: graph.keySet() ){
+            topSortUtil( node, results );
+        }
+        return results;
     }
 
     /* the words are in alphabetical order */
