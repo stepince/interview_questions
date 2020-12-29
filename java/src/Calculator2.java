@@ -69,7 +69,7 @@ public class Calculator2 {
     }
 
     public static void main(String[] args) {
-
-        System.out.println(calculate("5-9*6+100"));
+        String expr = "5*-2";
+        System.out.println(calculate(expr));
     }
 }

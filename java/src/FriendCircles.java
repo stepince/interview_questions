@@ -16,7 +16,6 @@ And you have to output the total number of friend circles among all the students
 Time:
   O(N^2)
 
-
  */
 public class FriendCircles {
 

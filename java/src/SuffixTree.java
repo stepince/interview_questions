@@ -1,35 +1,51 @@
 import java.util.HashMap;
 import java.util.Map;
+/*
 
+
+naive implementation
+O(N^2);
+ */
 public class SuffixTree {
 
-    final private Map<Character, SuffixTree> map = new HashMap<>();
+    final private Map<Character, SuffixTree> nodes = new HashMap<>();
 
     private SuffixTree(){}
 
     public String toString(){
-        return this.map.toString();
+        return this.nodes.toString();
     }
 
     public SuffixTree(String str){
         str += "$";
-        char[] array = str.toCharArray();
-        for ( int i = 0; i < array.length; ++i ){
-            add(this,array,i);
+        char[] chars = str.toCharArray();
+        for ( int i = 0; i < chars.length; ++i ){
+            add(this,chars,i);
         }
     }
 
-    private void add(SuffixTree trie, char[] array, int idx){
-        char ch = array[idx];
-        trie.map.putIfAbsent(ch,  new SuffixTree());
-        if( idx + 1 < array.length ) {
-            add(trie.map.get(ch),array, idx+1);
+    boolean hasPattern(char[] chars, int idx, SuffixTree tree ){
+        if ( idx == chars.length ) return true;
+        SuffixTree suffixTree = tree.nodes.get(chars[idx]);
+        return (suffixTree != null) && hasPattern(chars, idx + 1, suffixTree);
+    }
+
+    public boolean hasPattern(String str){
+        return hasPattern(str.toCharArray(),0,this);
+    }
+
+    private void add(SuffixTree tree, char[] chars, int idx){
+        SuffixTree suffixTree = tree.nodes.computeIfAbsent(chars[idx], (key)-> new SuffixTree());
+        if ( idx + 1 < chars.length ) {
+            add(suffixTree,chars, idx+1);
         }
     }
 
     public static void main(String[] args){
-        String str = args[0].trim();
-        SuffixTree trie  = new SuffixTree(str);
-        System.out.println(trie);
+//        String str = args[0].trim();
+        String str = "GeeksForGeeksGeeksQuizQuizQuizQuizQuizQuizQuizQuizQuiz";
+        SuffixTree tree  = new SuffixTree(str);
+        String pattern = "QuizQuizQuizQuizQuizQuizQuizQuizQuiz";
+        System.out.println(tree.hasPattern(pattern));
     }
 }

@@ -13,11 +13,11 @@ public class MaxArea {
             int width = j - i;
             int area = height * width;
             maxArea = Math.max( maxArea, area );
-            if ( heights[i] > heights[j] ){
-                --j;
+            if ( heights[i] < heights[j] ){
+                ++i;
             }
             else {
-                ++i;
+                --j;
             }
         }
         return maxArea;

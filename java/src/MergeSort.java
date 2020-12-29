@@ -12,25 +12,25 @@ public class MergeSort {
 
     private static void merge(int[] arr, int begin, int mid, int end, int[] temp){
         int i;
-        int leftIdx = begin;
-        int rightIdx = mid;
+        int left = begin;
+        int right = mid;
 
         // process merge into temp result
-        for ( i = begin; leftIdx < mid && rightIdx < end; ++i){
-            if ( arr[rightIdx] < arr[leftIdx] ){
-                temp[i] = arr[rightIdx++];
+        for ( i = begin; left < mid && right < end; ++i){
+            if ( arr[right] < arr[left] ){
+                temp[i] = arr[right++];
             }
             else {
-                temp[i] = arr[leftIdx++];
+                temp[i] = arr[left++];
             }
         }
         // add what is left in left half
-        for ( ; leftIdx < mid; ++i){
-            temp[i] = arr[leftIdx++];
+        for ( ; left < mid; ++i){
+            temp[i] = arr[left++];
         }
         // add what is left in right half
-        for ( ; rightIdx < end; ++i){
-            temp[i] = arr[rightIdx++];
+        for ( ; right < end; ++i){
+            temp[i] = arr[right++];
         }
         // copy temp values to seq array
         System.arraycopy(temp,begin,arr,begin,end-begin);

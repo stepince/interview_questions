@@ -21,16 +21,12 @@ price    | 3   5   8   9  10  17  17  20
 O(2^n)
 */
 
-
-import java.util.Arrays;
 public class RodCutting {
 
     public static int find(int len, int[] prices){
         if ( len == 0 ) return 0;
-        int max = 0;
-        if ( len <= prices.length ) {
-            max = prices[len-1];
-        }
+        // initialize to the default price for len else 0
+        int max = ( len <= prices.length ) ? prices[len-1] : 0;
 
         for ( int i = 1; i < len; ++i ) {
             max = Math.max(max,find(len-i,prices) + find(i,prices));
@@ -39,8 +35,10 @@ public class RodCutting {
     }
 
     public static void main(String[] args) {
-        int[] prices = Arrays.stream(args[0].split("[,\\s]+")).mapToInt(Integer::parseInt).toArray();
-        int len = Integer.parseInt(args[1]);
+//        int[] prices = Arrays.stream(args[0].split("[,\\s]+")).mapToInt(Integer::parseInt).toArray();
+//        int len = Integer.parseInt(args[1]);
+        int[] prices = {3, 5,   8 ,  9,  10,  17,  17,  20};
+        int len = 8;
         System.out.println(find(len,prices));
     }
 }

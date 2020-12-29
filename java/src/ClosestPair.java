@@ -12,36 +12,38 @@ import java.util.List;
  */
 public class ClosestPair {
 
-     public static List<Integer> find(int[] arr, final int total){
-          Arrays.sort(arr);
-          int l = 0, r = arr.length-1, left = 0, right = arr.length-1, currentDiff = Integer.MAX_VALUE;
+     public static List<Integer> find(int[] nums, final int total){
+          Arrays.sort(nums);
+          int l = 0, r = nums.length-1, left = 0, right = nums.length-1, currentDiff = Integer.MAX_VALUE;
           while ( l < r ) {
-              int pairTotal = arr[l] + arr[r];
-              // found
-              if ( pairTotal == total ) return Arrays.asList(arr[l],arr[r]);
+              int pairTotal = nums[l] + nums[r];
+              int diff = Math.abs(total-pairTotal);
+              if ( diff < currentDiff  ){
+                  currentDiff=diff;
+                  left=l;
+                  right=r;
+              }
 
-              int diff = Math.abs(total - pairTotal);
-              if ( diff < currentDiff ){
-                  left = l;
-                  right = r;
-                  currentDiff = diff;
+              // found
+              if ( pairTotal == total ) {
+                  break;
               }
-              if ( pairTotal > total ){
-                  --r;            
-              }
-              else{
+              else if ( pairTotal < total ){
                   ++l;
               }
+              else{
+                  --r;
+              }
           }
-          return Arrays.asList(arr[left],arr[right]);
+          return Arrays.asList(nums[left],nums[right]);
      }
 
      static public void main(String[] args) {
-//        int[] arr =  Arrays.stream(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+//        int[] nums =  Arrays.stream(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
 //        int total = Integer.parseInt(args[1]);
 
-         int[] arr = {2,44,6,7,8,9};
+         int[] nums = {2,44,6,7,8,9};
          int total = 49;
-         System.out.println(find(arr,total));
+         System.out.println(find(nums,total));
      }
 }

@@ -1,4 +1,8 @@
-import java.util.LinkedList;
+/*
+BST
+ */
+
+import java.util.ArrayDeque;
 import java.util.Queue;
 
 public class BinaryTreePrintLevelOrder {
@@ -14,16 +18,14 @@ public class BinaryTreePrintLevelOrder {
 
     static void print(Node root){
         if ( root == null ) return;
-        Queue<Node> queue = new LinkedList<>();
-        queue.add(root);
-        while(!queue.isEmpty()){
-            String sep = "";
-            for( int levelSize = queue.size() ; levelSize > 0 ; --levelSize) {
-                Node node = queue.remove();
-                System.out.print(sep + node.value);
-                sep = " ";
-                if (node.left != null) queue.add(node.left);
-                if (node.right != null) queue.add(node.right);
+        Queue<Node> q = new ArrayDeque<>();
+        q.add(root);
+        while(!q.isEmpty()){
+            for ( int i = 0, size = q.size();  i < size ; ++i ){
+                Node node = q.remove();
+                System.out.print(node.value + " ");
+                if (node.left != null) q.add(node.left);
+                if (node.right != null) q.add(node.right);
             }
             System.out.println();
         }

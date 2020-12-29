@@ -8,6 +8,7 @@ This is a famous Google interview question, also being asked by many other compa
 input: ilikesamsung
 output: i like sam sung, i like samsung: true
 
+https://leetcode.com/problems/word-break/
 
 loop
 O(n^2)

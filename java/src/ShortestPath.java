@@ -1,7 +1,5 @@
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
+
 /*
 unweighted directed
 Time Complexity : O(V + E)
@@ -50,11 +48,11 @@ public class ShortestPath {
          int[] distance = new int[graph.length];
          Arrays.fill(distance,-1);
          distance[src] = 0;
-         Queue<Node> queue = new LinkedList<>();
+         Queue<Node> queue = new ArrayDeque<>();
          queue.add(graph[src]);
 
          while (!queue.isEmpty()){
-             Node n = queue.remove();
+             Node n = queue.poll();
              for ( Node child: n.getChildren() ){
                  // this is also a visited check
                  if ( distance[child.value] == -1 ) {

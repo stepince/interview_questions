@@ -19,15 +19,17 @@ public class MaxRopeProduct {
     public static int find(int len) {
         if ( len == 0 ) return 0;
         if ( len == 1 ) return 1;
-        int currentMax = len;
+
+        // initialize to the default len
+        int max = len;
         for ( int i = 1; i < len; ++i ){
-            currentMax = Math.max(currentMax, find(i) * find(len-i));
+            max = Math.max(max, find(i) * find(len-i));
         }
-        return currentMax;
+        return max;
     }
 
     public static void main( String[] args ) {
-       //int len = Integer.parseInt(args[0]);
+        //int len = Integer.parseInt(args[0]);
         int len = 10;
         System.out.println(find(len));
     }

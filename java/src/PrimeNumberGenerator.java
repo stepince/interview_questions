@@ -3,9 +3,9 @@ import java.util.Arrays;
 public class PrimeNumberGenerator {
 
     public static void generate(int n){
+        if ( n < 2 ) return;
         boolean[] prime = new boolean[n+1];
         Arrays.fill(prime,true);
-
         prime[0] = false;
         prime[1] = false;
         // the outer loop is never more that i*i
@@ -29,7 +29,7 @@ public class PrimeNumberGenerator {
 
     public static void main(String[] args){
 //        int n = Integer.parseInt(args[0]);
-        int n  = 100000000;
+        int n  = 11;
         generate(n);
     }
 }

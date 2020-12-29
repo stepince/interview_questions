@@ -4,6 +4,9 @@
 https://www.geeksforgeeks.org/diameter-of-a-binary-tree/
 https://leetcode.com/problems/diameter-of-binary-tree/
 
+Note:  this was super confusing. The diameter of tree is the highest number of edges between any 2 nodes
+
+
 The diameter of a tree T is the largest of the following quantities:
 
 * the diameter of T’s left subtree
@@ -30,18 +33,18 @@ public class BinaryTreeDiameter {
         }
     }
 
-    static int dfsVisit( Node node, IntWrapper diameter ){
+    static int height( Node node, IntWrapper diameter ){
         if ( node == null ) return 0;
-        int left = dfsVisit(node.left, diameter);
-        int right = dfsVisit(node.right, diameter);
+        int left = height(node.left, diameter);
+        int right = height(node.right, diameter);
         int height = Math.max(left,right) + 1;
         diameter.val = Math.max(diameter.val, left + right);
         return height;
     }
 
-    public static int dfs( Node root ){
+    public static int diameter( Node root ){
         IntWrapper diameter = new IntWrapper();
-        dfsVisit(root,diameter);
+        height(root,diameter);
         return diameter.val;
     }
 
@@ -52,7 +55,7 @@ public class BinaryTreeDiameter {
         tree.left.left = new Node(4);
         tree.left.right = new Node(5);
 
-        System.out.println("The diameter of given binary tree is : "  + dfs(tree));
+        System.out.println("The diameter of given binary tree is : "  + diameter(tree));
     }
 
 }

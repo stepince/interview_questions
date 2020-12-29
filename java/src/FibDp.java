@@ -22,9 +22,7 @@ public class FibDp {
         if ( n == 2 ) return 1;
         if ( mem.containsKey(n) ) return mem.get(n);
         int val = fib(n-1,mem) + fib(n-2,mem);
-        mem.put(n,val);
-        return val;
-//        return mem.merge(n,val,(prev,curr)->curr);
+        return mem.merge(n,val,(prev,curr)->curr);
     }
 
     static int fib2(int n, Map<Integer,Integer> mem) {

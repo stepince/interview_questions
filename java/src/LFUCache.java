@@ -71,7 +71,6 @@ public class LFUCache {
 
     public static void main(String[] args){
         LFUCache lfuCache = new LFUCache(2);
-
         lfuCache.put(1, 1);
         lfuCache.put(2, 2);
         System.out.println("lfuCache.get(1): " + lfuCache.get(1));    // return 1

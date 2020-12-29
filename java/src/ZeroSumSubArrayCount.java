@@ -2,11 +2,11 @@ import java.util.*;
 
 public class ZeroSumSubArrayCount {
 
-    public static int find(int[] arr){
+    public static int find(int[] nums){
         Map<Integer,Integer> prefixSumMap = new HashMap<>();
         int count = 0;
         int currSum = 0;
-        for( int num:  arr ){
+        for( int num: nums ){
             currSum += num;
             if( currSum == 0 ) ++count;
             count += prefixSumMap.getOrDefault(currSum,0);
@@ -15,12 +15,9 @@ public class ZeroSumSubArrayCount {
         return count;
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 //        int[] arr = Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
-        int[] arr = {1,5,-5,0};
+        int[] arr = {1, 5, -5, 0};
         System.out.println(find(arr));
     }
-
-
-
 }

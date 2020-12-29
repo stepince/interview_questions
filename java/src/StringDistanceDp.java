@@ -1,8 +1,6 @@
-import java.util.HashMap;
-import java.util.Map;
-
 /*
 Given two strings str1 and str2 and below operations that can performed on str1. Find minimum number of edits (operations) required to convert ‘str1’ into ‘str2’.
+https://leetcode.com/problems/edit-distance
 
 Insert
 Remove
@@ -21,29 +19,28 @@ public class StringDistanceDp {
         return Math.min(a, Math.min(b,c));
     }
 
-    static private Integer find(String word1, String word2, int idx1, int idx2, Map<String,Integer> mem){
+    static int findUtil(char[] chars1, int idx1, char[] chars2, int idx2, Integer[][] mem ) {
+        if ( idx1 == chars1.length && idx2 == chars2.length ) return 0;
+        if ( idx1 == chars1.length ) return chars2.length - idx2;
+        if ( idx2 == chars2.length ) return chars1.length - idx1;
 
-        if ( idx1 == 0 || idx2 == 0 ) return Math.abs(idx1-idx2);
+        if ( mem[idx1][idx2] != null ) return mem[idx1][idx2];
 
-        String key = idx1 + ":" + idx2;
-        if ( mem.containsKey(key) ) return mem.get(key);
+        if ( chars1[idx1] == chars2[idx2] ) return mem[idx1][idx2] = findUtil(chars1, idx1+1, chars2, idx2+1, mem);
 
-        // same just increase;
-        if ( word1.charAt(idx1-1) == word2.charAt(idx2-1) ) {
-            return find(word1, word2, idx1-1, idx2-1,mem) ;
-        }
+        // replace cost
+        int replace = 1 + findUtil(chars1, idx1+1, chars2, idx2+1,mem);
 
-        int replaceCost = find(word1, word2, idx1-1, idx2,mem) + 1;
-        int insertCost = find(word1, word2, idx1, idx2-1,mem) + 1 ;
-        int deleteCost = find(word1, word2, idx1-1, idx2-1,mem) + 1;
+        // delete/insert char1
+        int deleteInsert1 = 1 + findUtil(chars1, idx1+1, chars2, idx2,mem);
 
-        int cost = min( insertCost, replaceCost, deleteCost );
-        mem.put(key,cost);
-        return cost;
+        // delete/insert char2
+        int deleteInsert2 = 1 + findUtil(chars1, idx1, chars2, idx2+1,mem);
+        return mem[idx1][idx2] = min( replace, deleteInsert1, deleteInsert2  );
     }
 
-    public static Integer find(String word1, String word2){
-        return find(word1, word2, word1.length(), word2.length(), new HashMap<>());
+    public static int find(String word1, String word2) {
+        return findUtil(word1.toCharArray(), 0, word2.toCharArray(), 0, new Integer[word1.length()+1][word2.length()+1] );
     }
 
     public static void main(String[] args){

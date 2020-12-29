@@ -1,5 +1,3 @@
-import java.util.Arrays;
-import java.util.stream.Stream;
 /*
    Given a set of integers, determine if there is a subset of the given set with sum equal to zero,
    note: not including the empty set, the empty set {} has sum 0
@@ -13,15 +11,15 @@ import java.util.stream.Stream;
  */
 public class ZeroSumSubset {
 
-    public static Integer sum ( Integer a, Integer b ){
+    private static Integer sum ( Integer a, Integer b ){
         if ( a == null ) return b;
         return a + b;
     }
 
-    private static boolean find(int[] arr, int idx, Integer total ){
+    private static boolean find(int[] nums, int idx, Integer total ){
         if ( total != null && total == 0  ) return true;
-        if ( idx == arr.length ) return false;
-        return find(arr, idx+1, sum( total, arr[idx]) ) || find(arr, idx+1, total);
+        if ( idx == nums.length ) return false;
+        return find(nums, idx+1, sum( total, nums[idx]) ) || find(nums, idx+1, total);
     }
 
     public static boolean find(int[] arr) {

@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
-
+/*
+  find all the math express that will equal a sum
+ */
 public class SumTo {
 
     public static List<String> find(char[] chars, int sum, int idx, String curr, List<String> results ){

@@ -10,7 +10,7 @@ import java.util.*;
   *  void relax(u, v) {
   *     if (u.dist + w(u,v) < v.dist) {
   *         v.dist = u.dist + w(u,v);
-  *        // predecessor is only needed to get the path path
+  *        // predecessor is only needed to get the path
   *        v.pred = u;
   *      }
   *  }
@@ -43,14 +43,6 @@ public class MinPathSum {
         public String toString(){
             return this.row + ":" + this.column;
         }
-        public int hashCode(){
-            return toString().hashCode();
-        }
-        public boolean equals( Object o ){
-            if ( o == this ) return true;
-            if ( !(o instanceof Node)) return false;
-            return toString().equals(o.toString());
-        }
     }
 
     public static int findUtil(int[][] matrix, int row, int col, int total, Set<String> visited) {
@@ -75,7 +67,7 @@ public class MinPathSum {
     }
 
     // find2 is more efficient than the dynamic programming
-    // It is using Bellman-Ford
+    // It is using Dijkstra
     public static int find2(int[][] matrix) {
         if ( matrix.length == 0 || matrix[0].length == 0 ) return 0;
         int rows = matrix.length;
@@ -104,10 +96,6 @@ public class MinPathSum {
                     queue.remove(v);
                     distances[v.row][v.column]=newDistance;
                     queue.add(v);
-                    System.out.println("updated");
-                }
-                else {
-                    System.out.println("Not updated");
                 }
             }
         }

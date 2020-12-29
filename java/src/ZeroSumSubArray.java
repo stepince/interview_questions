@@ -1,6 +1,6 @@
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Stream;
+
 /*
 
 Given an array of positive and negative numbers,
@@ -23,10 +23,10 @@ Notes: sub array is a contiguous set of elements
  */
 public class ZeroSumSubArray {
 
-    public static boolean find(int[] arr) {
+    public static boolean find(int[] nums) {
         Set<Integer> prefixSet = new HashSet<>();
         int accSum = 0;
-        for ( int num: arr ) {
+        for ( int num: nums ) {
             accSum += num;
             if ( accSum == 0 || prefixSet.contains(accSum) ) return true;
             prefixSet.add(accSum);
@@ -35,7 +35,8 @@ public class ZeroSumSubArray {
     }
 
     public static void main(String[] args){
-        int[] arr =  Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
-        System.out.println(find(arr));
+//        int[] arr =  Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+        int[] nums = {1,3,-3};
+        System.out.println(find(nums));
     }
 }

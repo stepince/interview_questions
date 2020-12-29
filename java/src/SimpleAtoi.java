@@ -1,13 +1,13 @@
 public class SimpleAtoi {
 
     public static int atoi(String str){
-        int num = 0;
-        char[] arr = str.toCharArray();
-        int place = 0;
-        for ( int i = arr.length -1 ; i >= 0; --i ){
-            num += Math.pow(10,place++)*( arr[i]-'0');
+        int val = 0;
+        char[] chars =  str.toCharArray();
+        for ( int i = chars.length-1, pow = 0; i>= 0; --i, ++pow ) {
+            int digit = chars[i] - '0';
+            val += digit * Math.pow(10,pow);
         }
-        return num;
+        return val;
     }
 
     public static void main(String[] args){

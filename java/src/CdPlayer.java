@@ -43,19 +43,20 @@ public class CdPlayer {
     public void shuffle(){
         Random rand = new Random();
         int size = songs.size();
-        List<Song> copy = new ArrayList<>(songs);
+        List<Song> songsCopy = new ArrayList<>(songs);
         for ( int i = 0; i < size; ++i ){
-            int j = (int)(i + (rand.nextFloat() * size )) %size;
-            Collections.swap(copy, i ,  j );
+            Collections.swap(songsCopy, i, rand.nextInt(size) );
         }
 
-        for ( int i = 0, j = 0; i < size; ++j ){
-            Song a = songs.get(i);
-            Song b = copy.get(j%size);
-            if ( b != null && !a.equals(b) ){
-                songs.set(i++,b);
-                copy.set(j%size,null);
+        for ( int i = 0, j = 0; i < size; ++i, ++j ){
+            int jIdx = j%size;
+            Song song = songsCopy.get(i);
+            while ( song == null || song.equals(songs.get(i)) ) {
+                jIdx=++j%size ;
+                song= songsCopy.get(jIdx);
             }
+            songs.set(i,song);
+            songsCopy.set(jIdx,null);
         }
     }
 

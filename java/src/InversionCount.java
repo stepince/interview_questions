@@ -1,6 +1,7 @@
 
 //import java.util.stream.Stream;
 /*
+ * https://www.geeksforgeeks.org/counting-inversions/
  *  Count the number of inversions
  *
  *
@@ -74,7 +75,10 @@ public class InversionCount {
     public static void main(String[] args){
 //        int[] arr = Stream.of(args[0].split("[, ]+")).mapToInt(Integer::parseInt).toArray();
 //         int[] arr = new int[]{3,1,2};
-         int[] arr = new int[]{1, 9, 6, 4, 5};
-        System.out.println(mergeCount(arr));
+
+
+//        int[] nums = new int[]{1, 9, 6, 4, 5};
+        int[] nums = { 1, 20, 6, 4, 5 };
+        System.out.println(mergeCount(nums));
     }
 }

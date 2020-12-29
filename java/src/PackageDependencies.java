@@ -13,29 +13,28 @@ public class PackageDependencies {
         vertices.computeIfAbsent(parent, (key)->new HashSet<>()).add(child);
     }
 
-    void dfs(List<String> l ){
+    void dfs(Deque<String> deq ){
         Set<String> visited = new HashSet<>();
         for ( String n: vertices.keySet() ){
             if ( !visited.contains(n)) {
-                dfsVisit(n,visited, l);
+                dfsVisit(n,visited, deq);
             }
         }
     }
 
-    void dfsVisit(String node, Set<String> visited, List<String> l ){
+    void dfsVisit(String node, Set<String> visited, Deque<String> deq ){
         visited.add(node);
         for ( String child: vertices.get(node) ){
             if ( !visited.contains(child)) {
-                dfsVisit(child, visited, l);
+                dfsVisit(child, visited, deq);
             }
         }
-        l.add(node);
+        deq.addFirst(node);
     }
 
     public List<String> topSort(){
-        List<String> l  = new ArrayList<>();
+        LinkedList<String> l  = new LinkedList<>();
         dfs(l);
-        Collections.reverse(l);
         return l;
     }
 

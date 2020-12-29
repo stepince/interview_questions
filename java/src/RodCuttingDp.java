@@ -21,37 +21,31 @@ price    | 3   5   8   9  10  17  17  20
 */
 
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 public class RodCuttingDp {
 
-    private static int find(int len, int[] prices, Map<Integer,Integer> mem){
+    private static int find(int len, int[] prices, Integer[] mem){
         if ( len == 0 ) return 0;
-        int max = 0;
-        if ( mem.containsKey(len) ) return mem.get(len);
-        if ( len <= prices.length ) {
-            max = prices[len-1];
-        }
+
+        // initialize to the default price for len else 0
+        if ( mem[len] != null ) return mem[len];
+
+        int max = ( len <= prices.length ) ? prices[len-1] : 0;
        
         for ( int i = 1; i < len; ++i ) {
             max = Math.max(max,find(len-i,prices,mem) + find(i,prices,mem));
         }
-        mem.put(len,max);
-        return max;
+        return mem[len] = max;
     }
 
     public static int find(int len, int[] prices){
-        return find(len,prices, new HashMap<>());
+        return find(len,prices, new Integer[len+1]);
     }
 
     public static void main(String[] args) {
-        int len = Integer.parseInt(args[0]);
-        int[] prices = Arrays.stream(args[1].split("[,\\s]+")).mapToInt(Integer::parseInt).toArray();
+//        int len = Integer.parseInt(args[0]);
+//        int[] prices = Arrays.stream(args[1].split("[,\\s]+")).mapToInt(Integer::parseInt).toArray();
+        int[] prices = {3, 5,   8 ,  9,  10,  17,  17,  20};
+        int len = 8;
         System.out.println(find(len,prices));
     }
-
-
-
 }

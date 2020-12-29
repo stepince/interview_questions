@@ -19,7 +19,7 @@ public class PrintPermutation {
 
     private static void permutation1(char[] chars, int idx){
         if ( idx == chars.length ){
-//            System.out.println(new String(chars));
+//          System.out.println(new String(chars));
         }
         for ( int i = idx; i < chars.length ; ++i ){
             swap(chars,idx,i);

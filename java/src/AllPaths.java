@@ -1,14 +1,11 @@
 import java.util.*;
 
 /*
-
-
-
 Time:
-    O(2^n*n!)
+    O(n*2^n)
 
 Auxiliary Space:
-    O(2^n*n!)
+    O(n*2^n)
  */
 public class AllPaths {
 
@@ -22,27 +19,27 @@ public class AllPaths {
         }
     }
 
-    void dfs(Node node, List<List<Node>> results, Set<String> visited, Deque<Node> path, String dest ){
-        if ( node.value.equals(dest) ){
+    void allPathsUtil(Node node, List<List<Node>> results, Set<String> visited, Deque<Node> path, String dst ){
+        if ( node.value.equals(dst) ){
             results.add( new ArrayList<>(path) );
             return;
         }
         visited.add(node.value);
-        for ( Node n: node.neighbors ){
-            if ( !visited.contains(n.value)) {
-                path.add(n);
-                dfs(n, results, visited, path, dest);
+        for ( Node nei: node.neighbors ){
+            if ( !visited.contains(nei.value)) {
+                path.addLast(nei);
+                allPathsUtil(nei, results, visited, path, dst);
                 path.removeLast();
             }
         }
         visited.remove(node.value);
     }
 
-    List<List<Node>> findAllPaths( Node n, String dest ){
+    List<List<Node>> findAllPaths( Node n, String dst ){
         List<List<Node>> results = new ArrayList<>();
-        Deque<Node> path = new LinkedList<>();
+        Deque<Node> path = new ArrayDeque<>();
         path.add(n);
-        dfs(n, results, new HashSet<>(), path, dest );
+        allPathsUtil(n, results, new HashSet<>(), path, dst );
         return results;
     }
 

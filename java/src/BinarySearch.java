@@ -3,20 +3,25 @@ import java.util.stream.Stream;
 
 public class BinarySearch {
 
-    public static int find(int[] arr, int num){
-        int begin = 0;
-        int end = arr.length;
-        while( begin < end ){
-            int mid = (begin + end)/2;
-            if ( arr[mid] == num ) return mid;
-            if ( arr[mid] > num ){
-                end = mid;
+    public static int find(int[] nums, int target){
+        int lo = 0;
+        int hi =  nums.length;
+        int idx = - 1;
+        while ( lo < hi ){
+            int mid = lo + (hi - lo) / 2;
+            // int mid = (lo + hi)/2;
+            if ( nums[mid] == target){
+                idx = mid;
+                break;
+            }
+            else if ( target < nums[mid] ){
+                hi = mid;
             }
             else {
-                begin = mid +1;
-            }           
+                lo = mid +1;
+            }
         }
-        return -1;
+        return idx;
     }
 
     public static void main(String[] args){

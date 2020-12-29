@@ -1,8 +1,8 @@
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 import java.util.Queue;
 
 /*
-  Maximum Level Sum of a Binary Tree
+  Maximum Level Sum of a Binary Tree (BST)
   https://leetcode.com/problems/maximum-level-sum-of-a-binary-tree/
   Return the smallest level X such that the sum of all the values of nodes at level X is maximal.
 
@@ -25,24 +25,20 @@ public class BinaryTreeLevelMaximal {
      public static int find(Node root ){
         if ( root == null ) return Integer.MIN_VALUE;
         int max = root.value;
-        Queue<Node> queue = new LinkedList<>();
-        queue.add(root);
-        int level = 1;
+        Queue<Node> q = new ArrayDeque<>();
+        q.add(root);
         int maxLevel = 1;
-        while( !queue.isEmpty() ){
-            int size = queue.size();
-            int curr = 0;
-            while ( size-- > 0 ){
-                Node node = queue.remove();
-                if ( node.left!= null) queue.add(node.left);
-                if ( node.right!= null) queue.add(node.right);
+        for( int level = 1, curr=0;  !q.isEmpty(); ++level, curr=0 ){
+            for ( int i = 0, size = q.size();  i < size ; ++i ){
+                Node node = q.poll();
+                if ( node.left!= null) q.add(node.left);
+                if ( node.right!= null) q.add(node.right);
                 curr += node.value;
             }
             if ( curr > max ){
                 max = curr;
                 maxLevel = level;
             }
-            ++level;
         }
         return maxLevel;
      }

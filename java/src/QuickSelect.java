@@ -1,4 +1,3 @@
-import java.util.Arrays;
 
 public class QuickSelect {
 
@@ -20,29 +19,27 @@ public class QuickSelect {
         return pivotIdx;
     }
 
-    private static void quickSelect(int[] arr, int begin, int end, int k){
+    private static void quickSelect(int[] nums, int begin, int end, int k){
         if ( begin < end ) {
-            int pivotIdx = partition(arr,begin,end);
-//          Top elements
-//            if ( (arr.length - k) < pivotIdx ) {
-            if ( pivotIdx < k ) {
-                quickSelect(arr, begin, pivotIdx - 1, k);
+            int pivotIdx = partition(nums,begin,end);
+            if ( k < pivotIdx  ) {
+                quickSelect(nums, begin, pivotIdx - 1, k);
             }
-            quickSelect(arr,pivotIdx+1, end, k);
+            else if ( k > pivotIdx ){
+                quickSelect(nums, pivotIdx + 1, end, k);
+            }
         }
     }
 
-    public static int[] find(int[] arr, int k){
-        quickSelect(arr,0, arr.length-1, k);
-        return Arrays.copyOfRange(arr, Math.max(0,arr.length - k),arr.length);
+    public static int find(int[] nums, int k){
+        if ( k > nums.length ) return -1;
+        quickSelect(nums,0, nums.length-1, k-1);
+        return nums[k-1];
     }
 
     public static void main(String[] args){
-//        int[] arr = Arrays.stream(args[0].split("[,\\s]+")).mapToInt(Integer::parseInt).toArray();
-//        int k = Integer.parseInt(args[1]);
-
-        int[] arr = new int[]{1, 9, 6, 4, 5};
-        int k = 2;
-        System.out.println(Arrays.toString(find(arr, k)));
+        int[] nums = new int[]{1, 9, 6, 4, 5};
+        int k = 5;
+        System.out.println(find(nums, k));
     }
 }

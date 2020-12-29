@@ -11,11 +11,9 @@ import java.util.Arrays;
 public class QuickSort {
 
     private static void swap(int[] arr, int a, int b){
-        if ( a != b ){
-            int temp = arr[a];
-            arr[a] = arr[b];
-            arr[b] = temp;
-        }
+        int temp = arr[a];
+        arr[a] = arr[b];
+        arr[b] = temp;
     }
 
     private static int partition(int[] arr, int begin, int end){

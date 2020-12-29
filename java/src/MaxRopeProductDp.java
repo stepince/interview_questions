@@ -15,34 +15,27 @@ Time:
 
 */
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class MaxRopeProductDp {
 
-    private static int counter = 1;
-
-    public static int find(int len, Map<Integer,Integer> mem) {
-        ++counter;
+    public static int find(int len, Integer[] mem) {
         if ( len == 0 ) return 0;
         if ( len == 1 ) return 1;
-        if ( mem.containsKey(len)) return mem.get(len);
-        int currentMax = len;
+        if ( mem[len] != null ) return mem[len];
+        // initialize to the default len
+        int max = len;
         for ( int i = 1; i < len; ++i ){
-            currentMax = Math.max(currentMax, find(i,mem) * find(len-i,mem));
+            max = Math.max(max, find(i,mem) * find(len-i,mem));
         }
-        mem.put(len,currentMax);
-        return currentMax;
+        return mem[len] = max;
     }
 
     public static int find(int len) {
-        return find(len,new HashMap<>() );
+        return find(len,new Integer[len+1] );
     }
 
     public static void main( String[] args ) {
         //int len = Integer.parseInt(args[0]);
         int len = 10;
         System.out.println(find(len));
-        System.out.println(counter);
     }
 }

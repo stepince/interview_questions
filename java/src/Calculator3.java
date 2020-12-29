@@ -7,6 +7,8 @@ https://leetcode.com/problems/basic-calculator-ii/
 
 I think this is the simplest and most intuitive solution to follow.
 It is also pretty fast 81% on leetcode
+
+note: non-negative
  */
 public class Calculator3 {
 
@@ -58,6 +60,7 @@ public class Calculator3 {
     }
 
     public static void main(String[] args) {
-        System.out.println(calculate("0-2147483647"));
+        String expr = "5*2";
+        System.out.println(calculate(expr));
     }
 }
