@@ -108,6 +108,8 @@ public class DocumentConverter {
         @XmlElement(name = "classroom")
         List<Classroom> classrooms = new ArrayList<>();
 
+        public Grade(){
+        }
         public Grade(Integer id){
             this.id=id;
         }
@@ -137,7 +139,8 @@ public class DocumentConverter {
 
         @XmlElement(name = "teacher")
         List<Teacher> teachers = new ArrayList<>();
-
+        public Classroom(){
+        }
         public Classroom(Integer id){
             this.id=id;
         }
@@ -198,6 +201,8 @@ public class DocumentConverter {
     @XmlAccessorType(XmlAccessType.FIELD)
     static class Student extends Person implements Serializable {
         private static final long serialVersionUID = 1L;
+        public Student(){
+        }
         public Student(Integer id){
             this.id=id;
         }
@@ -207,6 +212,8 @@ public class DocumentConverter {
     @XmlAccessorType(XmlAccessType.FIELD)
     static class Teacher extends Person implements Serializable {
         private static final long serialVersionUID = 1L;
+        public Teacher(){
+        }
         public Teacher(Integer id){
             this.id=id;
         }
