@@ -145,7 +145,6 @@ public class DocumentConverter {
         public void setName(String name){
             this.name=name;
         }
-
         public Integer getId(){
             return id;
         }
@@ -174,19 +173,15 @@ public class DocumentConverter {
         public void setId(Integer id){
             this.id=id;
         }
-
         public String getFirstName(){
             return this.firstName;
         }
-
         public void setFirstName(String firstName){
             this.firstName = firstName;
         }
-
         public String getLastName(){
             return this.lastName;
         }
-
         public void setLastName(String lastName){
             this.lastName = lastName;
         }
@@ -429,8 +424,8 @@ public class DocumentConverter {
                 for ( Grade grade: school.getGrades() ){
                     for ( Classroom classroom: grade.getClassrooms() ){
                         Stream<Teacher> teachers = classroom.getTeachers().stream();
-                        Teacher teacher1 = teachers.findFirst().orElse(null);
-                        Teacher teacher2 = teachers.skip(1).findFirst().orElse(null);
+                        Teacher teacher1 = teachers.findFirst().orElse(null );
+                        Teacher teacher2 = teachers.skip(1).findFirst().orElse(null );
                         for ( Student student : classroom.getStudents() ){
                             format(wr, grade, classroom, teacher1, teacher2, student );
                         }
