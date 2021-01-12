@@ -6,8 +6,12 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 /*
+     Interview question to convert a file from one format to another
+     xml -> csv
+     csv -> xml
+
 add jaxb-api lib
-FIXME: show add mvn pom.xml
+FIXME: should add mvn pom.xml
  */
 public class DocumentConverter {
 
