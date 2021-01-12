@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Stream;
 
 /*
      Interview question to convert a file from one format to another
@@ -269,12 +270,20 @@ public class DocumentConverter {
             return record;
         }
 
+        String getRecordValue( List<String> record, Map<String,Integer> hdr, CSV_FIELDS field ) {
+            return record.get(hdr.get( field.name() ));
+        }
+
+        Integer getRecordValueAsInteger( List<String> record, Map<String,Integer> hdr, CSV_FIELDS field ) {
+            String val = record.get(hdr.get( field.name() ));
+            return isBlank(val) ? null : Integer.valueOf(val);
+        }
         public SchoolDocument parse( Reader rdr ){
             try {
                 final Map<Integer,Classroom> classroomMap = new HashMap<>();
                 final Map<Integer,Grade> gradeMap = new HashMap<>();
 
-                SchoolDocument doc =  new SchoolDocument();
+                SchoolDocument doc = new SchoolDocument();
                 doc.setFileType(FileType.CSV);
                 School school = new School();
 
@@ -284,13 +293,13 @@ public class DocumentConverter {
 
                 Map<String,Integer> hdr = getHeader(scanner.nextLine());
                 while (scanner.hasNextLine()) {
-                    List<String> values = getRecordFromLine(scanner.nextLine());
+                    List<String> record = getRecordFromLine(scanner.nextLine());
 
                     //////////////////////////////////
                     // create grade
                     //////////////////////////////////
 
-                    Integer gradeId = Integer.valueOf(values.get( hdr.get( CSV_FIELDS.student_grade.name()) ));
+                    Integer gradeId = Integer.valueOf( getRecordValue( record, hdr, CSV_FIELDS.student_grade));
                     final Grade grade = gradeMap.computeIfAbsent(gradeId, key-> {
                         Grade myGrade = new Grade(gradeId);
                         school.getGrades().add(myGrade);
@@ -302,41 +311,40 @@ public class DocumentConverter {
                     //////////////////////////////////
 
                     // classroomId is always at index 0
-                    Integer classroomId = Integer.valueOf(values.get(0));
+                    Integer classroomId = Integer.valueOf(record.get(0));
                     Classroom classroom = classroomMap.computeIfAbsent(classroomId, key-> {
                         Classroom myClassroom = new Classroom(classroomId);
                         grade.getClassrooms().add(myClassroom);
                         return myClassroom;
                     });
-                    classroom.setName( values.get(hdr.get( CSV_FIELDS.classroom_name.name())  ));
+                    classroom.setName( getRecordValue( record, hdr, CSV_FIELDS.classroom_name) );
 
                     //////////////////////////////////
                     // create student
                     //////////////////////////////////
-                    Integer studentId = Integer.valueOf(values.get( hdr.get( CSV_FIELDS.student_id.name()) ));
+                    Integer studentId = getRecordValueAsInteger( record, hdr, CSV_FIELDS.student_id);
                     Student student = new Student(studentId);
-                    student.setFirstName( values.get( hdr.get( CSV_FIELDS.student_first_name.name()) ));
-                    student.setLastName( values.get( hdr.get( CSV_FIELDS.student_last_name.name()) ));
+                    student.setFirstName( getRecordValue( record, hdr, CSV_FIELDS.student_first_name));
+                    student.setLastName( getRecordValue( record, hdr, CSV_FIELDS.student_last_name) );
                     classroom.getStudents().add(student);
 
                     //////////////////////////////////
                     // create teacher1
                     //////////////////////////////////
-                    Integer teacher1Id = Integer.valueOf(values.get( hdr.get( CSV_FIELDS.teacher_1_id.name()) ));
+                    Integer teacher1Id = getRecordValueAsInteger( record, hdr, CSV_FIELDS.teacher_1_id);
                     Teacher teacher1 = new Teacher(teacher1Id);
-                    teacher1.setFirstName( values.get( hdr.get( CSV_FIELDS.teacher_1_first_name.name()) ));
-                    teacher1.setLastName( values.get( hdr.get( CSV_FIELDS.teacher_1_last_name.name()) ));
+                    teacher1.setFirstName( getRecordValue( record, hdr, CSV_FIELDS.teacher_1_first_name));
+                    teacher1.setLastName( getRecordValue(record, hdr, CSV_FIELDS.teacher_1_last_name ));
                     classroom.getTeachers().add(teacher1);
 
                     //////////////////////////////////
                     // create teacher2
                     //////////////////////////////////
-                    String teacher2IdStr = values.get(hdr.get( CSV_FIELDS.teacher_2_id.name()));
-                    if ( !isBlank(teacher2IdStr) ){
-                        Integer teacher2Id = Integer.valueOf( teacher2IdStr );
+                    Integer teacher2Id = getRecordValueAsInteger( record, hdr,CSV_FIELDS.teacher_2_id);
+                    if ( teacher2Id != null ){
                         Teacher teacher2 = new Teacher(teacher2Id);
-                        teacher2.setFirstName( values.get( hdr.get( CSV_FIELDS.teacher_2_first_name.name()) ));
-                        teacher2.setLastName( values.get( hdr.get( CSV_FIELDS.teacher_2_last_name.name()) ));
+                        teacher2.setFirstName( getRecordValue(record, hdr, CSV_FIELDS.teacher_2_first_name ));
+                        teacher2.setLastName( getRecordValue( record, hdr, CSV_FIELDS.teacher_2_last_name ) );
                         classroom.getTeachers().add(teacher2);
                     }
                 }
@@ -430,9 +438,9 @@ public class DocumentConverter {
                 formatHeader(wr);
                 for ( Grade grade: school.getGrades() ){
                     for ( Classroom classroom: grade.getClassrooms() ){
-                        List<Teacher> teachers = classroom.getTeachers();
-                        Teacher teacher1 = teachers.size() > 0 ? teachers.get(0) : null;
-                        Teacher teacher2 = teachers.size() > 1 ? teachers.get(1) : null;
+                        Stream<Teacher> teachers = classroom.getTeachers().stream();
+                        Teacher teacher1 = teachers.findFirst().orElse(null);
+                        Teacher teacher2 = teachers.skip(1).findFirst().orElse(null);
                         for ( Student student : classroom.getStudents() ){
                             format(wr, grade, classroom, teacher1, teacher2, student );
                         }
@@ -482,7 +490,7 @@ public class DocumentConverter {
         public SchoolDocument parse( InputStream is ){
             BufferedReader rdr = new BufferedReader(new InputStreamReader(is));
             String detectStr = readDetect(rdr);
-            if ( detectStr.startsWith(XML_HDR)  ){
+            if ( detectStr.startsWith(XML_HDR) ){
                 return new XMLSchoolDocumentParserImpl().parse( rdr );
             }
             else if ( detectStr.startsWith(CSV_CLASSROOM_ID) ){
@@ -564,7 +572,7 @@ public class DocumentConverter {
         }
     }
 
-    public static void main(String args[] ) throws Exception {
+    public static void main(String[] args) {
         /* Enter your code here. Read input from STDIN. Print output to STDOUT */
         /* The instructions say files but this states stdin/stdout */
 
