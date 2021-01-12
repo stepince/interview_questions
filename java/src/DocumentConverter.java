@@ -291,7 +291,7 @@ public class DocumentConverter {
 
                     Integer gradeId = Integer.valueOf(values.get( hdr.get( CSV_FIELDS.student_grade.name()) ));
                     final Grade grade = gradeMap.computeIfAbsent(gradeId, key-> {
-                        Grade myGrade  = new Grade(gradeId);
+                        Grade myGrade = new Grade(gradeId);
                         school.getGrades().add(myGrade);
                         return myGrade;
                     });
@@ -303,7 +303,7 @@ public class DocumentConverter {
                     // classroomId is always at index 0
                     Integer classroomId = Integer.valueOf(values.get(0));
                     Classroom classroom = classroomMap.computeIfAbsent(classroomId, key-> {
-                        Classroom myClassroom  = new Classroom(classroomId);
+                        Classroom myClassroom = new Classroom(classroomId);
                         grade.getClassrooms().add(myClassroom);
                         return myClassroom;
                     });
