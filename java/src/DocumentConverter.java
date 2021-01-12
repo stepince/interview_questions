@@ -474,7 +474,7 @@ public class DocumentConverter {
                 if ( hdr.startsWith(CSV_CLASSROOM_ID) ){
                     return FileType.CSV;
                 }
-                else if ( hdr.startsWith(XML_HDR)   ){
+                else if ( hdr.startsWith(XML_HDR) ){
                     return FileType.XML;
                 }
                 else {
