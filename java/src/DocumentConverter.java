@@ -5,6 +5,8 @@ import javax.xml.bind.annotation.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Stream;
+
 /*
      Interview question to convert a file from one format to another
      xml -> csv
@@ -429,9 +431,9 @@ public class DocumentConverter {
                 formatHeader(wr);
                 for ( Grade grade: school.getGrades() ){
                     for ( Classroom classroom: grade.getClassrooms() ){
-                        List<Teacher> teachers = classroom.getTeachers();
-                        Teacher teacher1 = teachers.size() > 0 ? teachers.get(0) : null;
-                        Teacher teacher2 = teachers.size() > 1 ? teachers.get(1) : null;
+                        Stream<Teacher> teachers = classroom.getTeachers().stream();
+                        Teacher teacher1 = teachers.findFirst().get();
+                        Teacher teacher2 = teachers.skip(1).findFirst().get();
                         for ( Student student : classroom.getStudents() ){
                             format(wr, grade, classroom, teacher1, teacher2, student );
                         }
