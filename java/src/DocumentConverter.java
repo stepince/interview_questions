@@ -50,7 +50,7 @@ public class DocumentConverter {
 
     static class ParseExeption extends RuntimeException {
         private static final long serialVersionUID = 1;
-        private Exception cause;
+        Exception cause;
         public ParseExeption(Exception ex ){
             this.cause = ex;
         }
@@ -58,7 +58,7 @@ public class DocumentConverter {
 
     static class FormatterException extends RuntimeException {
         private static final long serialVersionUID = 1;
-        private Exception cause;
+        Exception cause;
         public FormatterException(Exception ex ){
             this.cause = ex;
         }
@@ -66,7 +66,7 @@ public class DocumentConverter {
 
     static class DocumentException extends RuntimeException {
         private static final long serialVersionUID = 1;
-        private Exception cause;
+        Exception cause;
 
         public DocumentException(Exception ex ){
             this.cause = ex;
@@ -108,8 +108,6 @@ public class DocumentConverter {
         @XmlElement(name = "classroom")
         List<Classroom> classrooms = new ArrayList<>();
 
-        public Grade(){
-        }
         public Grade(Integer id){
             this.id=id;
         }
@@ -139,8 +137,7 @@ public class DocumentConverter {
 
         @XmlElement(name = "teacher")
         List<Teacher> teachers = new ArrayList<>();
-        public Classroom(){
-        }
+
         public Classroom(Integer id){
             this.id=id;
         }
@@ -201,8 +198,6 @@ public class DocumentConverter {
     @XmlAccessorType(XmlAccessType.FIELD)
     static class Student extends Person implements Serializable {
         private static final long serialVersionUID = 1L;
-        public Student(){
-        }
         public Student(Integer id){
             this.id=id;
         }
@@ -212,8 +207,6 @@ public class DocumentConverter {
     @XmlAccessorType(XmlAccessType.FIELD)
     static class Teacher extends Person implements Serializable {
         private static final long serialVersionUID = 1L;
-        public Teacher(){
-        }
         public Teacher(Integer id){
             this.id=id;
         }
@@ -378,7 +371,7 @@ public class DocumentConverter {
     }
 
     /*
-     * Implmentation of CSV Formatter
+     * Implementation of CSV Formatter
      *
      */
     static class CSVSchoolDocumentFormatterImpl implements SchoolDocumentFormatter {
