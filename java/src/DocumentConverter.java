@@ -358,7 +358,7 @@ public class DocumentConverter {
     }
 
     /*
-     * Implmentation of XML Formatter
+     * Implementation of XML Formatter
      *
      */
     static class XMLSchoolDocumentFormatterImpl implements SchoolDocumentFormatter {
