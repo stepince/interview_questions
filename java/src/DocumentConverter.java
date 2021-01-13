@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Stream;
 
-/**
+/*
      Interview question to convert a file from one format to another
      xml -> csv
      csv -> xml
@@ -13,20 +13,49 @@ import java.util.stream.Stream;
     Add jaxb-api lib in IDE
     FIXME: should add a maven pom.xml to project
  */
+
+/**
+ *   New File types will have to implement this interface
+ */
+
+interface SchoolDocumentParser {
+    DocumentConverter.SchoolDocument parse(Reader rdr );
+}
+
+/**
+ *  SchoolDocumentFormatter Interface
+ *  New file types will have implement this interface
+ */
+interface SchoolDocumentFormatter {
+    void format(OutputStream os, DocumentConverter.School school);
+}
+
 public class DocumentConverter {
 
     final static boolean XML_PRETTY_PRINT = true;
     final static String XML_HDR = "<?xml";
     final static String CSV_CLASSROOM_ID = "classroom id";
     final static String CSV_SPLIT_REGEX = ",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
-    final static int DETECT_LEN;
-    static {
-        DETECT_LEN = Math.max(XML_HDR.length(), CSV_CLASSROOM_ID.length() );
-    }
+    final static int DETECT_LINE_LEN = 1000;
 
     enum FileType {
         XML, CSV, UNKNOWN
     }
+
+    final static Map<FileType,String> FILE_TYPE_DETECT_MAP = Map.of(
+            FileType.XML,XML_HDR,
+            FileType.CSV,CSV_CLASSROOM_ID
+    );
+
+    final static Map<FileType,Class<? extends SchoolDocumentFormatter>> FILE_TYPE_FORMATTER_MAP = Map.of(
+            FileType.XML, XMLSchoolDocumentFormatterImpl.class,
+            FileType.CSV, CSVSchoolDocumentFormatterImpl.class
+    );
+
+    final static Map<FileType,Class<? extends SchoolDocumentParser>> FILE_TYPE_PARSER_MAP = Map.of(
+            FileType.XML,XMLSchoolDocumentParserImpl.class,
+            FileType.CSV,CSVSchoolDocumentParserImpl.class
+    );
 
     enum CSV_FIELDS {
         classroom_name,
@@ -46,10 +75,10 @@ public class DocumentConverter {
         return str == null || str.trim().length() == 0;
     }
 
-    static class ParseExeption extends RuntimeException {
+    static class ParseException extends RuntimeException {
         private static final long serialVersionUID = 1;
         Exception cause;
-        public ParseExeption(Exception ex ){
+        public ParseException(Exception ex ){
             this.cause = ex;
         }
     }
@@ -68,9 +97,6 @@ public class DocumentConverter {
 
         public DocumentException(Exception ex ){
             this.cause = ex;
-        }
-        public DocumentException( String mesg ){
-            super(mesg);
         }
     }
 
@@ -208,14 +234,6 @@ public class DocumentConverter {
     }
 
     /**
-     *   New File types will have to implement this interface
-     */
-
-    interface SchoolDocumentParser {
-        SchoolDocument parse( Reader rdr );
-    }
-
-    /**
        Implementation of XML Document Parser
     */
     static class XMLSchoolDocumentParserImpl implements SchoolDocumentParser {
@@ -231,7 +249,7 @@ public class DocumentConverter {
                 return doc;
             }
             catch ( Exception ex ){
-                throw new ParseExeption(ex);
+                throw new ParseException(ex);
             }
         }
     }
@@ -251,7 +269,7 @@ public class DocumentConverter {
 
         List<String> getRecordFromLine(String line){
             List<String> record = new ArrayList<>();
-            for ( String val: line.split(",") ){
+            for ( String val: line.split(CSV_SPLIT_REGEX) ){
                 record.add(val.trim());
             }
             return record;
@@ -339,17 +357,9 @@ public class DocumentConverter {
                 return doc;
             }
             catch ( Exception ex ){
-                throw new ParseExeption(ex);
+                throw new ParseException(ex);
             }
         }
-    }
-
-    /**
-     *  SchoolDocumentFormatter Interface
-     *  New file types will have implement this interface
-     */
-    interface SchoolDocumentFormatter {
-        void format(OutputStream os, School school);
     }
 
     /**
@@ -459,37 +469,29 @@ public class DocumentConverter {
     static class SchoolDocumentBuilderImpl implements SchoolDocumentBuilder {
         FileType fileTypeDetect( BufferedReader rdr ){
             try {
-                rdr.mark(DETECT_LEN);
-                StringBuilder sb = new StringBuilder();
-                for ( int i = 0; i < DETECT_LEN; ++i ){
-                    sb.append((char)rdr.read());
+                rdr.mark(DETECT_LINE_LEN);
+                String hdr = rdr.readLine();
+                for ( FileType fileType: FileType.values() ){
+                    if ( hdr.startsWith( FILE_TYPE_DETECT_MAP.get(fileType) ) ) {
+                        return fileType;
+                    }
                 }
-                rdr.reset();
-                String hdr = sb.toString().toLowerCase();
-                if ( hdr.startsWith(CSV_CLASSROOM_ID) ){
-                    return FileType.CSV;
-                }
-                else if ( hdr.startsWith(XML_HDR) ){
-                    return FileType.XML;
-                }
-                else {
-                    return FileType.UNKNOWN;
-                }
+                return FileType.UNKNOWN;
             }
             catch ( Exception ex ){
                 throw new DocumentException(ex);
             }
+            finally {
+                try { rdr.reset(); } catch (Exception ignore){}
+            }
         }
 
-        SchoolDocumentParser getDocumentParser( FileType fileType  ){
-            if ( fileType == FileType.XML ){
-                return new XMLSchoolDocumentParserImpl();
+        SchoolDocumentParser getDocumentParser( FileType fileType ){
+            try {
+                return FILE_TYPE_PARSER_MAP.get(fileType).getDeclaredConstructor().newInstance();
             }
-            else if ( fileType == FileType.CSV ){
-                return new CSVSchoolDocumentParserImpl();
-            }
-            else {
-                throw new DocumentException("Invalid Document Type");
+            catch ( Exception ex ){
+                throw new DocumentException(ex);
             }
         }
 
@@ -556,15 +558,12 @@ public class DocumentConverter {
             return instance;
         }
 
-        public SchoolDocumentFormatter getFormatter( FileType type ){
-            if ( type == FileType.CSV ){
-                return new CSVSchoolDocumentFormatterImpl();
+        public SchoolDocumentFormatter getFormatter( FileType fileType ){
+            try {
+                return FILE_TYPE_FORMATTER_MAP.get(fileType).getDeclaredConstructor().newInstance();
             }
-            else if ( type == FileType.XML  ){
-                return new XMLSchoolDocumentFormatterImpl();
-            }
-            else {
-                return null;
+            catch ( Exception ex ){
+                throw new FormatterException(ex);
             }
         }
     }
@@ -574,7 +573,6 @@ public class DocumentConverter {
         /* The instructions say files but this states stdin/stdout */
         InputStream is = System.in;
         OutputStream os = System.out;
-
         SchoolDocumentBuilderFactory dbFactory = SchoolDocumentBuilderFactory.getInstance();
         SchoolDocumentBuilder documentBuilder = dbFactory.newInstance();
         SchoolDocument schoolDocument = documentBuilder.parse(is);
