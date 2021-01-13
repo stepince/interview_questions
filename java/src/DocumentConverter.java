@@ -261,6 +261,7 @@ public class DocumentConverter {
         Map<String,Integer> getHeader(String line){
             Map<String,Integer> hdr = new HashMap<>();
             String[] fields = line.split(CSV_SPLIT_REGEX);
+            //SKIP classroom id field
             for ( int i = 1; i < fields.length;++i ){
                 hdr.put(fields[i].trim(),i);
             }
