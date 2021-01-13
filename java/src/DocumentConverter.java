@@ -6,9 +6,9 @@ import java.util.*;
 import java.util.stream.Stream;
 
 /*
-     Interview question to convert a file from one format to another
-     xml -> csv
-     csv -> xml
+    Interview question to convert a file from one format to another
+    xml -> csv
+    csv -> xml
 
     Add jaxb-api lib in IDE
     FIXME: should add a maven pom.xml to project
