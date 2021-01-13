@@ -19,7 +19,7 @@ import java.util.stream.Stream;
  */
 
 interface SchoolDocumentParser {
-    DocumentConverter.SchoolDocument parse(Reader rdr );
+    DocumentConverter.SchoolDocument parse(Reader rdr);
 }
 
 /**
@@ -36,10 +36,10 @@ public class DocumentConverter {
     final static String XML_HDR = "<?xml";
     final static String CSV_CLASSROOM_ID = "classroom id";
     final static String CSV_SPLIT_REGEX = ",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
-    final static int DETECT_LINE_LEN = 1000;
+    final static int DETECT_LINE_LEN = 100;
 
     enum FileType {
-        XML, CSV, UNKNOWN
+        UNKNOWN, XML, CSV,
     }
 
     final static Map<FileType,String> FILE_TYPE_DETECT_MAP = Map.of(
@@ -53,11 +53,16 @@ public class DocumentConverter {
     );
 
     final static Map<FileType,Class<? extends SchoolDocumentParser>> FILE_TYPE_PARSER_MAP = Map.of(
-            FileType.XML,XMLSchoolDocumentParserImpl.class,
-            FileType.CSV,CSVSchoolDocumentParserImpl.class
+            FileType.XML, XMLSchoolDocumentParserImpl.class,
+            FileType.CSV, CSVSchoolDocumentParserImpl.class
     );
 
     enum CSV_FIELDS {
+        classroom_id {
+            public String toString(){
+                return CSV_CLASSROOM_ID;
+            }
+        },
         classroom_name,
         teacher_1_id,
         teacher_1_last_name,
@@ -86,7 +91,7 @@ public class DocumentConverter {
     static class FormatterException extends RuntimeException {
         private static final long serialVersionUID = 1;
         Exception cause;
-        public FormatterException(Exception ex ){
+        public FormatterException(Exception ex){
             this.cause = ex;
         }
     }
@@ -132,7 +137,11 @@ public class DocumentConverter {
         @XmlElement(name = "classroom")
         List<Classroom> classrooms = new ArrayList<>();
 
+        public Grade(){}
+
         public Grade(Integer id){
+            // just to remove IDE warning for not being used (used by JAXB)
+            this();
             this.id=id;
         }
         public Integer getId(){
@@ -162,7 +171,11 @@ public class DocumentConverter {
         @XmlElement(name = "teacher")
         List<Teacher> teachers = new ArrayList<>();
 
+        public Classroom(){}
+
         public Classroom(Integer id){
+            // just to remove IDE warning for not being used (used by JAXB)
+            this();
             this.id=id;
         }
         public String getName(){
@@ -218,7 +231,11 @@ public class DocumentConverter {
     static class Student extends Person implements Serializable {
         private static final long serialVersionUID = 1L;
 
+        public Student(){}
+
         public Student(Integer id){
+            // just to remove IDE warning for not being used (used by JAXB)
+            this();
             this.id=id;
         }
     }
@@ -228,7 +245,11 @@ public class DocumentConverter {
     static class Teacher extends Person implements Serializable {
         private static final long serialVersionUID = 1L;
 
+        public Teacher(){}
+
         public Teacher(Integer id){
+            // just to remove IDE warning for not being used (used by JAXB)
+            this();
             this.id=id;
         }
     }
@@ -261,8 +282,7 @@ public class DocumentConverter {
         Map<String,Integer> getHeader(String line){
             Map<String,Integer> hdr = new HashMap<>();
             String[] fields = line.split(CSV_SPLIT_REGEX);
-            //SKIP classroom id field
-            for ( int i = 1; i < fields.length;++i ){
+            for ( int i = 0; i < fields.length; ++i ){
                 hdr.put(fields[i].trim(),i);
             }
             return hdr;
@@ -277,11 +297,11 @@ public class DocumentConverter {
         }
 
         String getRecordValue( List<String> record, Map<String,Integer> hdr, CSV_FIELDS field ) {
-            return record.get(hdr.get( field.name() ));
+            return record.get(hdr.get( field.toString() ));
         }
 
         Integer getRecordValueAsInteger( List<String> record, Map<String,Integer> hdr, CSV_FIELDS field ) {
-            String val = record.get(hdr.get( field.name() ));
+            String val = record.get(hdr.get( field.toString() ));
             return isBlank(val) ? null : Integer.valueOf(val);
         }
 
@@ -305,8 +325,7 @@ public class DocumentConverter {
                     //////////////////////////////////
                     // create grade
                     //////////////////////////////////
-
-                    Integer gradeId = Integer.valueOf( getRecordValue( record, hdr, CSV_FIELDS.student_grade));
+                    Integer gradeId = getRecordValueAsInteger( record, hdr, CSV_FIELDS.student_grade);
                     final Grade grade = gradeMap.computeIfAbsent(gradeId, key-> {
                         Grade myGrade = new Grade(gradeId);
                         school.getGrades().add(myGrade);
@@ -316,9 +335,7 @@ public class DocumentConverter {
                     //////////////////////////////////
                     // create classroom
                     //////////////////////////////////
-
-                    // classroomId is always at index 0
-                    Integer classroomId = Integer.valueOf(record.get(0));
+                    Integer classroomId = getRecordValueAsInteger( record, hdr, CSV_FIELDS.classroom_id);
                     Classroom classroom = classroomMap.computeIfAbsent(classroomId, key-> {
                         Classroom myClassroom = new Classroom(classroomId);
                         grade.getClassrooms().add(myClassroom);
@@ -340,7 +357,7 @@ public class DocumentConverter {
                     //////////////////////////////////
                     Integer teacher1Id = getRecordValueAsInteger( record, hdr, CSV_FIELDS.teacher_1_id);
                     Teacher teacher1 = new Teacher(teacher1Id);
-                    teacher1.setFirstName( getRecordValue( record, hdr, CSV_FIELDS.teacher_1_first_name));
+                    teacher1.setFirstName( getRecordValue( record, hdr, CSV_FIELDS.teacher_1_first_name ));
                     teacher1.setLastName( getRecordValue(record, hdr, CSV_FIELDS.teacher_1_last_name ));
                     classroom.getTeachers().add(teacher1);
 
@@ -351,7 +368,7 @@ public class DocumentConverter {
                     if ( teacher2Id != null ){
                         Teacher teacher2 = new Teacher(teacher2Id);
                         teacher2.setFirstName( getRecordValue(record, hdr, CSV_FIELDS.teacher_2_first_name ));
-                        teacher2.setLastName( getRecordValue( record, hdr, CSV_FIELDS.teacher_2_last_name ) );
+                        teacher2.setLastName( getRecordValue( record, hdr, CSV_FIELDS.teacher_2_last_name ));
                         classroom.getTeachers().add(teacher2);
                     }
                 }
@@ -437,7 +454,7 @@ public class DocumentConverter {
                         Stream<Teacher> teachers = classroom.getTeachers().stream();
                         Teacher teacher1 = teachers.findFirst().orElse(null );
                         Teacher teacher2 = teachers.skip(1).findFirst().orElse(null );
-                        for ( Student student : classroom.getStudents() ){
+                        for ( Student student: classroom.getStudents() ){
                             format(wr, grade, classroom, teacher1, teacher2, student );
                         }
                     }
@@ -467,12 +484,13 @@ public class DocumentConverter {
         }
     }
 
-    static class SchoolDocumentBuilderImpl implements SchoolDocumentBuilder {
+    static class SchoolDocumentBuilder {
         FileType fileTypeDetect( BufferedReader rdr ){
             try {
                 rdr.mark(DETECT_LINE_LEN);
                 String hdr = rdr.readLine();
                 for ( FileType fileType: FileType.values() ){
+                    if ( fileType == FileType.UNKNOWN ) continue;
                     if ( hdr.startsWith( FILE_TYPE_DETECT_MAP.get(fileType) ) ) {
                         return fileType;
                     }
@@ -503,10 +521,6 @@ public class DocumentConverter {
         }
     }
 
-    interface SchoolDocumentBuilder {
-        SchoolDocument parse( InputStream ios );
-    }
-
     /**
      *  SchoolDocumentBuilderFactory
      *  This factory class will create a SchoolDocumentBuilder
@@ -531,7 +545,7 @@ public class DocumentConverter {
             return instance;
         }
         public SchoolDocumentBuilder newInstance(){
-            return new SchoolDocumentBuilderImpl();
+            return new SchoolDocumentBuilder();
         }
     }
 
