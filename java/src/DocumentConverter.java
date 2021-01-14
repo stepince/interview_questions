@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 /**
  *   New File types will have to implement this interface
  */
-
 interface SchoolDocumentParser {
     DocumentConverter.SchoolDocument parse(Reader rdr);
 }
@@ -305,10 +304,58 @@ public class DocumentConverter {
             return isBlank(val) ? null : Integer.valueOf(val);
         }
 
+        Grade processGrade( School school, Map<Integer,Grade> gradeMap, Map<String,Integer> hdr, List<String> record){
+            Integer gradeId = getRecordValueAsInteger( record, hdr, CSV_FIELDS.student_grade);
+            return gradeMap.computeIfAbsent(gradeId, key-> {
+                Grade myGrade = new Grade(gradeId);
+                school.getGrades().add(myGrade);
+                return myGrade;
+            });
+        }
+
+        Classroom processClassroom( Grade grade, Map<Integer,Classroom> classroomMap, Map<String,Integer> hdr, List<String> record){
+            Integer classroomId = getRecordValueAsInteger( record, hdr, CSV_FIELDS.classroom_id);
+            Classroom classroom = classroomMap.computeIfAbsent(classroomId, key-> {
+                Classroom myClassroom = new Classroom(classroomId);
+                grade.getClassrooms().add(myClassroom);
+                return myClassroom;
+            });
+            classroom.setName( getRecordValue( record, hdr, CSV_FIELDS.classroom_name) );
+            return classroom;
+        }
+
+        Student processStudent( Classroom classroom, Map<String,Integer> hdr, List<String> record){
+            Integer studentId = getRecordValueAsInteger( record, hdr, CSV_FIELDS.student_id);
+            Student student = new Student(studentId);
+            student.setFirstName( getRecordValue( record, hdr, CSV_FIELDS.student_first_name));
+            student.setLastName( getRecordValue( record, hdr, CSV_FIELDS.student_last_name) );
+            classroom.getStudents().add(student);
+            return student;
+        }
+
+        Teacher processTeacher1( Classroom classroom, Map<String,Integer> hdr, List<String> record){
+            Integer teacher1Id = getRecordValueAsInteger( record, hdr, CSV_FIELDS.teacher_1_id);
+            Teacher teacher1 = new Teacher(teacher1Id);
+            teacher1.setFirstName( getRecordValue( record, hdr, CSV_FIELDS.teacher_1_first_name ));
+            teacher1.setLastName( getRecordValue(record, hdr, CSV_FIELDS.teacher_1_last_name ));
+            classroom.getTeachers().add(teacher1);
+            return teacher1;
+        }
+
+        Teacher processTeacher2( Classroom classroom, Map<String,Integer> hdr, List<String> record){
+            Integer teacher2Id = getRecordValueAsInteger( record, hdr, CSV_FIELDS.teacher_2_id);
+            if ( teacher2Id == null ) return null;
+            Teacher teacher2 = new Teacher(teacher2Id);
+            teacher2.setFirstName( getRecordValue( record, hdr, CSV_FIELDS.teacher_2_first_name ));
+            teacher2.setLastName( getRecordValue(record, hdr, CSV_FIELDS.teacher_2_last_name ));
+            classroom.getTeachers().add(teacher2);
+            return teacher2;
+        }
+
         public SchoolDocument parse( Reader rdr ){
             try {
-                final Map<Integer,Classroom> classroomMap = new HashMap<>();
-                final Map<Integer,Grade> gradeMap = new HashMap<>();
+                Map<Integer,Classroom> classroomMap = new HashMap<>();
+                Map<Integer,Grade> gradeMap = new HashMap<>();
 
                 SchoolDocument doc = new SchoolDocument();
                 doc.setFileType(FileType.CSV);
@@ -321,56 +368,11 @@ public class DocumentConverter {
                 Map<String,Integer> hdr = getHeader(scanner.nextLine());
                 while (scanner.hasNextLine()) {
                     List<String> record = getRecordFromLine(scanner.nextLine());
-
-                    //////////////////////////////////
-                    // create grade
-                    //////////////////////////////////
-                    Integer gradeId = getRecordValueAsInteger( record, hdr, CSV_FIELDS.student_grade);
-                    final Grade grade = gradeMap.computeIfAbsent(gradeId, key-> {
-                        Grade myGrade = new Grade(gradeId);
-                        school.getGrades().add(myGrade);
-                        return myGrade;
-                    });
-
-                    //////////////////////////////////
-                    // create classroom
-                    //////////////////////////////////
-                    Integer classroomId = getRecordValueAsInteger( record, hdr, CSV_FIELDS.classroom_id);
-                    Classroom classroom = classroomMap.computeIfAbsent(classroomId, key-> {
-                        Classroom myClassroom = new Classroom(classroomId);
-                        grade.getClassrooms().add(myClassroom);
-                        return myClassroom;
-                    });
-                    classroom.setName( getRecordValue( record, hdr, CSV_FIELDS.classroom_name) );
-
-                    //////////////////////////////////
-                    // create student
-                    //////////////////////////////////
-                    Integer studentId = getRecordValueAsInteger( record, hdr, CSV_FIELDS.student_id);
-                    Student student = new Student(studentId);
-                    student.setFirstName( getRecordValue( record, hdr, CSV_FIELDS.student_first_name));
-                    student.setLastName( getRecordValue( record, hdr, CSV_FIELDS.student_last_name) );
-                    classroom.getStudents().add(student);
-
-                    //////////////////////////////////
-                    // create teacher1
-                    //////////////////////////////////
-                    Integer teacher1Id = getRecordValueAsInteger( record, hdr, CSV_FIELDS.teacher_1_id);
-                    Teacher teacher1 = new Teacher(teacher1Id);
-                    teacher1.setFirstName( getRecordValue( record, hdr, CSV_FIELDS.teacher_1_first_name ));
-                    teacher1.setLastName( getRecordValue(record, hdr, CSV_FIELDS.teacher_1_last_name ));
-                    classroom.getTeachers().add(teacher1);
-
-                    //////////////////////////////////
-                    // create teacher2
-                    //////////////////////////////////
-                    Integer teacher2Id = getRecordValueAsInteger( record, hdr,CSV_FIELDS.teacher_2_id);
-                    if ( teacher2Id != null ){
-                        Teacher teacher2 = new Teacher(teacher2Id);
-                        teacher2.setFirstName( getRecordValue(record, hdr, CSV_FIELDS.teacher_2_first_name ));
-                        teacher2.setLastName( getRecordValue( record, hdr, CSV_FIELDS.teacher_2_last_name ));
-                        classroom.getTeachers().add(teacher2);
-                    }
+                    Grade grade = processGrade( school, gradeMap, hdr, record);
+                    Classroom classroom = processClassroom( grade, classroomMap, hdr, record);
+                    processStudent( classroom, hdr, record);
+                    processTeacher1( classroom, hdr, record);
+                    processTeacher2( classroom, hdr, record);
                 }
                 return doc;
             }
@@ -406,22 +408,14 @@ public class DocumentConverter {
         void formatHeader( Writer wr )
                 throws IOException
         {
-            String sf = String.format(
-                    "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s\n",
-                    CSV_CLASSROOM_ID,
-                    CSV_FIELDS.classroom_name,
-                    CSV_FIELDS.teacher_1_id,
-                    CSV_FIELDS.teacher_1_last_name,
-                    CSV_FIELDS.teacher_1_first_name,
-                    CSV_FIELDS.teacher_2_id,
-                    CSV_FIELDS.teacher_2_last_name,
-                    CSV_FIELDS.teacher_2_first_name,
-                    CSV_FIELDS.student_id,
-                    CSV_FIELDS.student_last_name,
-                    CSV_FIELDS.student_first_name,
-                    CSV_FIELDS.student_grade
-            );
-            wr.write(sf);
+            StringBuilder sb = new StringBuilder();
+            String comma = "";
+            for ( CSV_FIELDS field: CSV_FIELDS.values() ){
+                sb.append(comma).append(field.toString());
+                comma = ", ";
+            }
+            sb.append("\n");
+            wr.write(sb.toString());
         }
 
         void format(Writer wr, Grade grade, Classroom classroom, Teacher teacher1, Teacher teacher2, Student student)
