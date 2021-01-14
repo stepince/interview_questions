@@ -82,22 +82,6 @@ public class DocumentConverter {
         return str == null || str.trim().length() == 0;
     }
 
-    static class ParseException extends RuntimeException {
-        private static final long serialVersionUID = 1;
-        Exception cause;
-        public ParseException(Exception ex ){
-            this.cause = ex;
-        }
-    }
-
-    static class FormatterException extends RuntimeException {
-        private static final long serialVersionUID = 1;
-        Exception cause;
-        public FormatterException(Exception ex){
-            this.cause = ex;
-        }
-    }
-
     static class DocumentException extends RuntimeException {
         private static final long serialVersionUID = 1;
         Exception cause;
@@ -272,7 +256,7 @@ public class DocumentConverter {
                 return doc;
             }
             catch ( Exception ex ){
-                throw new ParseException(ex);
+                throw new DocumentException(ex);
             }
         }
     }
@@ -371,7 +355,7 @@ public class DocumentConverter {
                 return doc;
             }
             catch ( Exception ex ){
-                throw new ParseException(ex);
+                throw new DocumentException(ex);
             }
         }
     }
@@ -389,7 +373,7 @@ public class DocumentConverter {
                 jaxbMarshaller.marshal( school, os );
             }
             catch ( Exception ex ){
-                throw new FormatterException(ex);
+                throw new DocumentException(ex);
             }
         }
     }
@@ -444,7 +428,7 @@ public class DocumentConverter {
                 wr.flush();
             }
             catch ( Exception ex ){
-                throw new FormatterException(ex);
+                throw new DocumentException(ex);
             }
         }
     }
@@ -515,8 +499,7 @@ public class DocumentConverter {
     static class SchoolDocumentBuilderFactory {
         private static SchoolDocumentBuilderFactory instance;
 
-        private SchoolDocumentBuilderFactory(){
-        }
+        private SchoolDocumentBuilderFactory(){}
 
         public static SchoolDocumentBuilderFactory getInstance(){
             //DCL
@@ -564,7 +547,7 @@ public class DocumentConverter {
                 return FILE_TYPE_FORMATTER_MAP.get(fileType).getDeclaredConstructor().newInstance();
             }
             catch ( Exception ex ){
-                throw new FormatterException(ex);
+                throw new DocumentException(ex);
             }
         }
     }
