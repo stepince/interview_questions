@@ -3,6 +3,8 @@ import javax.xml.bind.annotation.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /*
@@ -17,6 +19,7 @@ import java.util.stream.Stream;
 /**
  *   New File types will have to implement this interface
  */
+
 interface SchoolDocumentParser {
     DocumentConverter.SchoolDocument parse(Reader rdr);
 }
@@ -278,34 +281,24 @@ public class DocumentConverter {
      *  Implementation of CSV Document Parser
     */
     static class CSVSchoolDocumentParserImpl implements SchoolDocumentParser {
-        Map<String,Integer> getHeader(String line){
-            Map<String,Integer> hdr = new HashMap<>();
-            String[] fields = line.split(CSV_SPLIT_REGEX);
-            for ( int i = 0; i < fields.length; ++i ){
-                hdr.put(fields[i].trim(),i);
-            }
-            return hdr;
+
+        Map<String,Integer> getHeaderMap(String line){
+            AtomicInteger i = new AtomicInteger();
+            return Stream.of(line.split(CSV_SPLIT_REGEX) ).map(String::trim)
+                    .collect(Collectors.toMap(String::trim , x -> i.getAndIncrement()));
         }
 
-        List<String> getRecordFromLine(String line){
-            List<String> record = new ArrayList<>();
-            for ( String val: line.split(CSV_SPLIT_REGEX) ){
-                record.add(val.trim());
-            }
-            return record;
+        String getRecordValue( List<String> record, Map<String,Integer> hdrMap, CSV_FIELDS field ) {
+            return record.get(hdrMap.get( field.toString() ));
         }
 
-        String getRecordValue( List<String> record, Map<String,Integer> hdr, CSV_FIELDS field ) {
-            return record.get(hdr.get( field.toString() ));
-        }
-
-        Integer getRecordValueAsInteger( List<String> record, Map<String,Integer> hdr, CSV_FIELDS field ) {
-            String val = record.get(hdr.get( field.toString() ));
+        Integer getRecordValueAsInteger( List<String> record, Map<String,Integer> hdrMap, CSV_FIELDS field ) {
+            String val = record.get(hdrMap.get( field.toString() ));
             return isBlank(val) ? null : Integer.valueOf(val);
         }
 
-        Grade processGrade( School school, Map<Integer,Grade> gradeMap, Map<String,Integer> hdr, List<String> record){
-            Integer gradeId = getRecordValueAsInteger( record, hdr, CSV_FIELDS.student_grade);
+        Grade processGrade( School school, Map<Integer,Grade> gradeMap, Map<String,Integer> hdrMap, List<String> record){
+            Integer gradeId = getRecordValueAsInteger( record, hdrMap, CSV_FIELDS.student_grade);
             return gradeMap.computeIfAbsent(gradeId, key-> {
                 Grade myGrade = new Grade(gradeId);
                 school.getGrades().add(myGrade);
@@ -313,14 +306,14 @@ public class DocumentConverter {
             });
         }
 
-        Classroom processClassroom( Grade grade, Map<Integer,Classroom> classroomMap, Map<String,Integer> hdr, List<String> record){
-            Integer classroomId = getRecordValueAsInteger( record, hdr, CSV_FIELDS.classroom_id);
+        Classroom processClassroom( Grade grade, Map<Integer,Classroom> classroomMap, Map<String,Integer> hdrMap, List<String> record){
+            Integer classroomId = getRecordValueAsInteger( record, hdrMap, CSV_FIELDS.classroom_id);
             Classroom classroom = classroomMap.computeIfAbsent(classroomId, key-> {
                 Classroom myClassroom = new Classroom(classroomId);
                 grade.getClassrooms().add(myClassroom);
                 return myClassroom;
             });
-            classroom.setName( getRecordValue( record, hdr, CSV_FIELDS.classroom_name) );
+            classroom.setName( getRecordValue( record, hdrMap, CSV_FIELDS.classroom_name) );
             return classroom;
         }
 
@@ -365,14 +358,15 @@ public class DocumentConverter {
                 Scanner scanner = new Scanner(rdr);
                 if ( !scanner.hasNextLine() ) throw new Exception("Invalid CSV");
 
-                Map<String,Integer> hdr = getHeader(scanner.nextLine());
+                Map<String,Integer> hdrMap = getHeaderMap(scanner.nextLine());
                 while (scanner.hasNextLine()) {
-                    List<String> record = getRecordFromLine(scanner.nextLine());
-                    Grade grade = processGrade( school, gradeMap, hdr, record);
-                    Classroom classroom = processClassroom( grade, classroomMap, hdr, record);
-                    processStudent( classroom, hdr, record);
-                    processTeacher1( classroom, hdr, record);
-                    processTeacher2( classroom, hdr, record);
+                    String line = scanner.nextLine();
+                    List<String> record = Stream.of(line.split(CSV_SPLIT_REGEX)).map(String::trim).collect(Collectors.toList());
+                    Grade grade = processGrade( school, gradeMap, hdrMap, record);
+                    Classroom classroom = processClassroom( grade, classroomMap, hdrMap, record);
+                    processStudent( classroom, hdrMap, record);
+                    processTeacher1( classroom, hdrMap, record);
+                    processTeacher2( classroom, hdrMap, record);
                 }
                 return doc;
             }
@@ -408,14 +402,8 @@ public class DocumentConverter {
         void formatHeader( Writer wr )
                 throws IOException
         {
-            StringBuilder sb = new StringBuilder();
-            String comma = "";
-            for ( CSV_FIELDS field: CSV_FIELDS.values() ){
-                sb.append(comma).append(field.toString());
-                comma = ", ";
-            }
-            sb.append("\n");
-            wr.write(sb.toString());
+            String hdr = Stream.of(CSV_FIELDS.values()).map(Enum::toString).collect(Collectors.joining(", "));
+            wr.write( hdr + "\n" );
         }
 
         void format(Writer wr, Grade grade, Classroom classroom, Teacher teacher1, Teacher teacher2, Student student)
