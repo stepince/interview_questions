@@ -301,31 +301,28 @@ public class DocumentConverter {
             return classroom;
         }
 
-        Student processStudent( Classroom classroom, Map<String,Integer> hdr, List<String> record){
+        Student createStudent( Map<String,Integer> hdr, List<String> record){
             Integer studentId = getRecordValueAsInteger( record, hdr, CSV_FIELDS.student_id);
             Student student = new Student(studentId);
             student.setFirstName( getRecordValue( record, hdr, CSV_FIELDS.student_first_name));
             student.setLastName( getRecordValue( record, hdr, CSV_FIELDS.student_last_name) );
-            classroom.getStudents().add(student);
             return student;
         }
 
-        Teacher processTeacher1( Classroom classroom, Map<String,Integer> hdr, List<String> record){
+        Teacher createTeacher1( Map<String,Integer> hdr, List<String> record){
             Integer teacher1Id = getRecordValueAsInteger( record, hdr, CSV_FIELDS.teacher_1_id);
             Teacher teacher1 = new Teacher(teacher1Id);
             teacher1.setFirstName( getRecordValue( record, hdr, CSV_FIELDS.teacher_1_first_name ));
             teacher1.setLastName( getRecordValue(record, hdr, CSV_FIELDS.teacher_1_last_name ));
-            classroom.getTeachers().add(teacher1);
             return teacher1;
         }
 
-        Teacher processTeacher2( Classroom classroom, Map<String,Integer> hdr, List<String> record){
+        Teacher createTeacher2( Map<String,Integer> hdr, List<String> record){
             Integer teacher2Id = getRecordValueAsInteger( record, hdr, CSV_FIELDS.teacher_2_id);
             if ( teacher2Id == null ) return null;
             Teacher teacher2 = new Teacher(teacher2Id);
             teacher2.setFirstName( getRecordValue( record, hdr, CSV_FIELDS.teacher_2_first_name ));
             teacher2.setLastName( getRecordValue(record, hdr, CSV_FIELDS.teacher_2_last_name ));
-            classroom.getTeachers().add(teacher2);
             return teacher2;
         }
 
@@ -348,9 +345,12 @@ public class DocumentConverter {
                     List<String> record = Stream.of(line.split(CSV_SPLIT_REGEX)).map(String::trim).collect(Collectors.toList());
                     Grade grade = processGrade( school, gradeMap, hdrMap, record);
                     Classroom classroom = processClassroom( grade, classroomMap, hdrMap, record);
-                    processStudent( classroom, hdrMap, record);
-                    processTeacher1( classroom, hdrMap, record);
-                    processTeacher2( classroom, hdrMap, record);
+                    classroom.getStudents().add( createStudent( hdrMap, record));
+                    classroom.getTeachers().add( createTeacher1(hdrMap, record));
+                    Teacher teacher2 = createTeacher2(hdrMap, record);
+                    if ( teacher2 != null ) {
+                        classroom.getTeachers().add(createTeacher2(hdrMap, record));
+                    }
                 }
                 return doc;
             }
