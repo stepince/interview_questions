@@ -532,8 +532,13 @@ public class DocumentConverter {
      */
     static class SchoolDocumentBuilderFactory {
         private static SchoolDocumentBuilderFactory instance;
-        private SchoolDocumentBuilderFactory(){}
-        public static SchoolDocumentBuilderFactory getInstance(){
+        private SchoolDocumentBuilder schoolDocumentBuilder;
+
+        private SchoolDocumentBuilderFactory(){
+            schoolDocumentBuilder = new SchoolDocumentBuilder();
+        }
+
+        public static SchoolDocumentBuilderFactory newInstance(){
             //DCL
             if ( instance == null ){
                 synchronized( SchoolDocumentBuilderFactory.class ){
@@ -544,8 +549,9 @@ public class DocumentConverter {
             }
             return instance;
         }
-        public SchoolDocumentBuilder newInstance(){
-            return new SchoolDocumentBuilder();
+
+        public SchoolDocumentBuilder getInstance(){
+            return this.schoolDocumentBuilder;
         }
     }
 
@@ -588,8 +594,8 @@ public class DocumentConverter {
         /* The instructions say files but this states stdin/stdout */
         InputStream is = System.in;
         OutputStream os = System.out;
-        SchoolDocumentBuilderFactory dbFactory = SchoolDocumentBuilderFactory.getInstance();
-        SchoolDocumentBuilder documentBuilder = dbFactory.newInstance();
+        SchoolDocumentBuilderFactory dbFactory = SchoolDocumentBuilderFactory.newInstance();
+        SchoolDocumentBuilder documentBuilder = dbFactory.getInstance();
         SchoolDocument schoolDocument = documentBuilder.parse(is);
         SchoolDocumentFormatterFactory formatterFactory = SchoolDocumentFormatterFactory.getInstance();
         if ( schoolDocument == null ){
