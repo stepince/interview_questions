@@ -241,8 +241,8 @@ public class DocumentConverter {
     }
 
     /**
-       Implementation of XML Document Parser
-    */
+     * Implementation of XML Document Parser
+     */
     static class XMLSchoolDocumentParserImpl implements SchoolDocumentParser {
 
         public SchoolDocument parse( Reader rdr ){
@@ -263,7 +263,7 @@ public class DocumentConverter {
 
     /**
      *  Implementation of CSV Document Parser
-    */
+     */
     static class CSVSchoolDocumentParserImpl implements SchoolDocumentParser {
 
         Map<String,Integer> getHeaderMap(String line){
