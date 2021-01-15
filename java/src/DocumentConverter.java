@@ -1,6 +1,7 @@
 import javax.xml.bind.*;
 import javax.xml.bind.annotation.*;
 import java.io.*;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,25 +13,9 @@ import java.util.stream.Stream;
     xml -> csv
     csv -> xml
 
-    Add jaxb-api lib in IDE
+    Add jaxb-api, jaxb-runtime libs in IDE
     FIXME: should add a maven pom.xml to project
  */
-
-/**
- *   New File types will have to implement this interface
- */
-
-interface SchoolDocumentParser {
-    DocumentConverter.SchoolDocument parse(Reader rdr);
-}
-
-/**
- *  SchoolDocumentFormatter Interface
- *  New file types will have implement this interface
- */
-interface SchoolDocumentFormatter {
-    void format(OutputStream os, DocumentConverter.School school);
-}
 
 public class DocumentConverter {
 
@@ -41,7 +26,43 @@ public class DocumentConverter {
     final static int DETECT_LINE_LEN = 100;
 
     enum FileType {
-        UNKNOWN, XML, CSV,
+        XML, CSV, UNKNOWN;
+        public static Stream<FileType> stream() {
+            return Stream.of(FileType.values());
+        }
+    }
+
+    static class SchoolDocument {
+        private FileType fileType;
+        private School school;
+        public FileType getFileType(){
+            return fileType;
+        }
+        public void setFileType(FileType fileType){
+            this.fileType = fileType;
+        }
+        public School getSchool(){
+            return school;
+        }
+        public void setSchool(School school){
+            this.school=school;
+        }
+    }
+
+    /**
+     *   New File types will have to implement this interface
+     */
+
+    interface SchoolDocumentParser {
+        SchoolDocument parse(Reader rdr);
+    }
+
+    /**
+     *  SchoolDocumentFormatter Interface
+     *  New file types will have implement this interface
+     */
+    interface SchoolDocumentFormatter {
+        void format(OutputStream os, DocumentConverter.School school);
     }
 
     final static Map<FileType,String> FILE_TYPE_DETECT_MAP = Map.of(
@@ -75,7 +96,11 @@ public class DocumentConverter {
         student_id,
         student_first_name,
         student_last_name,
-        student_grade,
+        student_grade;
+
+        public static Stream<CSV_FIELDS> stream() {
+            return Stream.of(CSV_FIELDS.values());
+        }
     }
 
     static boolean isBlank(String str ){
@@ -283,12 +308,12 @@ public class DocumentConverter {
                 String val = values.get( hdrMap.get( field.toString() ));
                 return isBlank(val) ? null : Integer.valueOf(val);
             }
-        }
 
-        Map<String,Integer> getHeaderMap(String line){
-            AtomicInteger i = new AtomicInteger();
-            return Stream.of(line.split(CSV_SPLIT_REGEX) ).map(String::trim)
-                    .collect(Collectors.toMap(String::trim , x -> i.getAndIncrement()));
+            static Map<String,Integer> getHeaderMap(String line){
+                AtomicInteger i = new AtomicInteger();
+                return Stream.of(line.split(CSV_SPLIT_REGEX) ).map(String::trim)
+                        .collect(Collectors.toMap(String::trim , x -> i.getAndIncrement()));
+            }
         }
 
         Grade processGrade( School school, Map<Integer,Grade> gradeMap, Record rec){
@@ -349,7 +374,7 @@ public class DocumentConverter {
                 Scanner scanner = new Scanner(rdr);
                 if ( !scanner.hasNextLine() ) throw new Exception("Invalid CSV");
 
-                Map<String,Integer> hdrMap = getHeaderMap(scanner.nextLine());
+                Map<String,Integer> hdrMap = Record.getHeaderMap(scanner.nextLine());
                 while (scanner.hasNextLine()) {
                     Record rec = new Record( hdrMap, scanner.nextLine() );
                     Grade grade = processGrade( school, gradeMap, rec);
@@ -393,7 +418,7 @@ public class DocumentConverter {
         void formatHeader( Writer wr )
                 throws IOException
         {
-            String hdr = Stream.of(CSV_FIELDS.values()).map(Enum::toString).collect(Collectors.joining(", "));
+            String hdr = CSV_FIELDS.stream().map(Enum::toString).collect(Collectors.joining(", "));
             wr.write( hdr + "\n" );
         }
 
@@ -424,9 +449,9 @@ public class DocumentConverter {
                 formatHeader(wr);
                 for ( Grade grade: school.getGrades() ){
                     for ( Classroom classroom: grade.getClassrooms() ){
-                        Stream<Teacher> teachers = classroom.getTeachers().stream();
-                        Teacher teacher1 = teachers.findFirst().orElse(null );
-                        Teacher teacher2 = teachers.skip(1).findFirst().orElse(null );
+                        List<Teacher> teachers = classroom.getTeachers();
+                        Teacher teacher1 = teachers.stream().findFirst().orElse(null );
+                        Teacher teacher2 = teachers.stream().skip(1).findFirst().orElse(null );
                         for ( Student student: classroom.getStudents() ){
                             format(wr, grade, classroom, teacher1, teacher2, student );
                         }
@@ -440,35 +465,12 @@ public class DocumentConverter {
         }
     }
 
-    static class SchoolDocument {
-        private FileType fileType;
-        private School school;
-        public FileType getFileType(){
-            return fileType;
-        }
-        public void setFileType(FileType fileType){
-            this.fileType = fileType;
-        }
-        public School getSchool(){
-            return school;
-        }
-        public void setSchool(School school){
-            this.school=school;
-        }
-    }
-
     static class SchoolDocumentBuilder {
         FileType fileTypeDetect( BufferedReader rdr ){
             try {
                 rdr.mark(DETECT_LINE_LEN);
                 String hdr = rdr.readLine();
-                for ( FileType fileType: FileType.values() ){
-                    if ( fileType == FileType.UNKNOWN ) continue;
-                    if ( hdr.startsWith( FILE_TYPE_DETECT_MAP.get(fileType) ) ) {
-                        return fileType;
-                    }
-                }
-                return FileType.UNKNOWN;
+                return FileType.stream().filter( x -> hdr.startsWith(  FILE_TYPE_DETECT_MAP.get(x)  ) ).findFirst().orElse( FileType.UNKNOWN );
             }
             catch ( Exception ex ){
                 throw new DocumentException(ex);
@@ -559,11 +561,28 @@ public class DocumentConverter {
         }
     }
 
+    public static InputStream getResource( String name ){
+        try {
+            Class<?> cls = Class.forName("DocumentConverter");
+            ClassLoader classLoader = cls.getClassLoader();
+            URL url = classLoader.getResource( name );
+            // never use assert in production code
+            assert url != null;
+            return url.openStream();
+        }
+        catch ( Exception ex ){
+            throw new DocumentException(ex);
+        }
+    }
+
     public static void main(String[] args) {
         /* Enter your code here. Read input from STDIN. Print output to STDOUT */
         /* The instructions say files but this states stdin/stdout */
-        InputStream is = System.in;
+//        InputStream is = System.in;
+//        InputStream is = getResource("DocumentConverter.xml");
+        InputStream is = getResource("DocumentConverter.txt");
         OutputStream os = System.out;
+
         SchoolDocumentBuilderFactory dbFactory = SchoolDocumentBuilderFactory.getInstance();
         SchoolDocumentBuilder documentBuilder = dbFactory.newInstance();
         SchoolDocument schoolDocument = documentBuilder.parse(is);
