@@ -266,23 +266,33 @@ public class DocumentConverter {
      */
     static class CSVSchoolDocumentParserImpl implements SchoolDocumentParser {
 
+        static class Record {
+            Map<String,Integer> hdrMap;
+            List<String> values;
+
+            public Record( Map<String,Integer> hdrMap, String line ){
+                this.hdrMap = hdrMap;
+                values = Stream.of(line.split(CSV_SPLIT_REGEX)).map(String::trim).collect(Collectors.toList());
+            }
+
+            String getValue( CSV_FIELDS field ) {
+                return values.get( hdrMap.get( field.toString() ));
+            }
+
+            Integer getValueAsInteger( CSV_FIELDS field ) {
+                String val = values.get( hdrMap.get( field.toString() ));
+                return isBlank(val) ? null : Integer.valueOf(val);
+            }
+        }
+
         Map<String,Integer> getHeaderMap(String line){
             AtomicInteger i = new AtomicInteger();
             return Stream.of(line.split(CSV_SPLIT_REGEX) ).map(String::trim)
                     .collect(Collectors.toMap(String::trim , x -> i.getAndIncrement()));
         }
 
-        String getRecordValue( List<String> record, Map<String,Integer> hdrMap, CSV_FIELDS field ) {
-            return record.get(hdrMap.get( field.toString() ));
-        }
-
-        Integer getRecordValueAsInteger( List<String> record, Map<String,Integer> hdrMap, CSV_FIELDS field ) {
-            String val = record.get(hdrMap.get( field.toString() ));
-            return isBlank(val) ? null : Integer.valueOf(val);
-        }
-
-        Grade processGrade( School school, Map<Integer,Grade> gradeMap, Map<String,Integer> hdrMap, List<String> record){
-            Integer gradeId = getRecordValueAsInteger( record, hdrMap, CSV_FIELDS.student_grade);
+        Grade processGrade( School school, Map<Integer,Grade> gradeMap, Record rec){
+            Integer gradeId = rec.getValueAsInteger(CSV_FIELDS.student_grade);
             return gradeMap.computeIfAbsent(gradeId, key-> {
                 Grade myGrade = new Grade(gradeId);
                 school.getGrades().add(myGrade);
@@ -290,39 +300,39 @@ public class DocumentConverter {
             });
         }
 
-        Classroom processClassroom( Grade grade, Map<Integer,Classroom> classroomMap, Map<String,Integer> hdrMap, List<String> record){
-            Integer classroomId = getRecordValueAsInteger( record, hdrMap, CSV_FIELDS.classroom_id);
+        Classroom processClassroom( Grade grade, Map<Integer,Classroom> classroomMap, Record rec){
+            Integer classroomId = rec.getValueAsInteger( CSV_FIELDS.classroom_id );
             Classroom classroom = classroomMap.computeIfAbsent(classroomId, key-> {
                 Classroom myClassroom = new Classroom(classroomId);
                 grade.getClassrooms().add(myClassroom);
                 return myClassroom;
             });
-            classroom.setName( getRecordValue( record, hdrMap, CSV_FIELDS.classroom_name) );
+            classroom.setName( rec.getValue( CSV_FIELDS.classroom_name) );
             return classroom;
         }
 
-        Student createStudent( Map<String,Integer> hdrMap, List<String> record){
-            Integer studentId = getRecordValueAsInteger( record, hdrMap, CSV_FIELDS.student_id);
+        Student createStudent( Record rec ){
+            Integer studentId = rec.getValueAsInteger( CSV_FIELDS.student_id);
             Student student = new Student(studentId);
-            student.setFirstName( getRecordValue( record, hdrMap, CSV_FIELDS.student_first_name));
-            student.setLastName( getRecordValue( record, hdrMap, CSV_FIELDS.student_last_name) );
+            student.setFirstName( rec.getValue(CSV_FIELDS.student_first_name));
+            student.setLastName( rec.getValue(CSV_FIELDS.student_last_name) );
             return student;
         }
 
-        Teacher createTeacher1( Map<String,Integer> hdrMap, List<String> record){
-            Integer teacherId = getRecordValueAsInteger( record, hdrMap, CSV_FIELDS.teacher_1_id);
+        Teacher createTeacher1( Record rec ){
+            Integer teacherId = rec.getValueAsInteger( CSV_FIELDS.teacher_1_id);
             Teacher teacher = new Teacher(teacherId);
-            teacher.setFirstName( getRecordValue( record, hdrMap, CSV_FIELDS.teacher_1_first_name ));
-            teacher.setLastName( getRecordValue(record, hdrMap, CSV_FIELDS.teacher_1_last_name ));
+            teacher.setFirstName( rec.getValue( CSV_FIELDS.teacher_1_first_name ));
+            teacher.setLastName( rec.getValue(CSV_FIELDS.teacher_1_last_name ));
             return teacher;
         }
 
-        Teacher createTeacher2( Map<String,Integer> hdrMap, List<String> record){
-            Integer teacherId = getRecordValueAsInteger( record, hdrMap, CSV_FIELDS.teacher_2_id);
+        Teacher createTeacher2( Record rec ){
+            Integer teacherId = rec.getValueAsInteger(CSV_FIELDS.teacher_2_id);
             if ( teacherId == null ) return null;
             Teacher teacher = new Teacher(teacherId);
-            teacher.setFirstName( getRecordValue( record, hdrMap, CSV_FIELDS.teacher_2_first_name ));
-            teacher.setLastName( getRecordValue(record, hdrMap, CSV_FIELDS.teacher_2_last_name ));
+            teacher.setFirstName( rec.getValue( CSV_FIELDS.teacher_2_first_name ));
+            teacher.setLastName( rec.getValue( CSV_FIELDS.teacher_2_last_name ));
             return teacher;
         }
 
@@ -341,13 +351,12 @@ public class DocumentConverter {
 
                 Map<String,Integer> hdrMap = getHeaderMap(scanner.nextLine());
                 while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    List<String> record = Stream.of(line.split(CSV_SPLIT_REGEX)).map(String::trim).collect(Collectors.toList());
-                    Grade grade = processGrade( school, gradeMap, hdrMap, record);
-                    Classroom classroom = processClassroom( grade, classroomMap, hdrMap, record);
-                    classroom.getStudents().add( createStudent( hdrMap, record) );
-                    classroom.getTeachers().add( createTeacher1(hdrMap, record) );
-                    Teacher teacher2 = createTeacher2(hdrMap, record);
+                    Record rec = new Record( hdrMap, scanner.nextLine() );
+                    Grade grade = processGrade( school, gradeMap, rec);
+                    Classroom classroom = processClassroom( grade, classroomMap, rec);
+                    classroom.getStudents().add( createStudent( rec ) );
+                    classroom.getTeachers().add( createTeacher1( rec ) );
+                    Teacher teacher2 = createTeacher2( rec );
                     if ( teacher2 != null ) classroom.getTeachers().add(teacher2);
                 }
                 return doc;
