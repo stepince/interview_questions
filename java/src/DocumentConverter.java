@@ -345,8 +345,8 @@ public class DocumentConverter {
                     List<String> record = Stream.of(line.split(CSV_SPLIT_REGEX)).map(String::trim).collect(Collectors.toList());
                     Grade grade = processGrade( school, gradeMap, hdrMap, record);
                     Classroom classroom = processClassroom( grade, classroomMap, hdrMap, record);
-                    classroom.getStudents().add( createStudent( hdrMap, record));
-                    classroom.getTeachers().add( createTeacher1(hdrMap, record));
+                    classroom.getStudents().add( createStudent( hdrMap, record) );
+                    classroom.getTeachers().add( createTeacher1(hdrMap, record) );
                     Teacher teacher2 = createTeacher2(hdrMap, record);
                     if ( teacher2 != null ) classroom.getTeachers().add(teacher2);
                 }
