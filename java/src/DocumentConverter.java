@@ -301,29 +301,29 @@ public class DocumentConverter {
             return classroom;
         }
 
-        Student createStudent( Map<String,Integer> hdr, List<String> record){
-            Integer studentId = getRecordValueAsInteger( record, hdr, CSV_FIELDS.student_id);
+        Student createStudent( Map<String,Integer> hdrMap, List<String> record){
+            Integer studentId = getRecordValueAsInteger( record, hdrMap, CSV_FIELDS.student_id);
             Student student = new Student(studentId);
-            student.setFirstName( getRecordValue( record, hdr, CSV_FIELDS.student_first_name));
-            student.setLastName( getRecordValue( record, hdr, CSV_FIELDS.student_last_name) );
+            student.setFirstName( getRecordValue( record, hdrMap, CSV_FIELDS.student_first_name));
+            student.setLastName( getRecordValue( record, hdrMap, CSV_FIELDS.student_last_name) );
             return student;
         }
 
-        Teacher createTeacher1( Map<String,Integer> hdr, List<String> record){
-            Integer teacher1Id = getRecordValueAsInteger( record, hdr, CSV_FIELDS.teacher_1_id);
-            Teacher teacher1 = new Teacher(teacher1Id);
-            teacher1.setFirstName( getRecordValue( record, hdr, CSV_FIELDS.teacher_1_first_name ));
-            teacher1.setLastName( getRecordValue(record, hdr, CSV_FIELDS.teacher_1_last_name ));
-            return teacher1;
+        Teacher createTeacher1( Map<String,Integer> hdrMap, List<String> record){
+            Integer teacherId = getRecordValueAsInteger( record, hdrMap, CSV_FIELDS.teacher_1_id);
+            Teacher teacher = new Teacher(teacherId);
+            teacher.setFirstName( getRecordValue( record, hdrMap, CSV_FIELDS.teacher_1_first_name ));
+            teacher.setLastName( getRecordValue(record, hdrMap, CSV_FIELDS.teacher_1_last_name ));
+            return teacher;
         }
 
-        Teacher createTeacher2( Map<String,Integer> hdr, List<String> record){
-            Integer teacher2Id = getRecordValueAsInteger( record, hdr, CSV_FIELDS.teacher_2_id);
-            if ( teacher2Id == null ) return null;
-            Teacher teacher2 = new Teacher(teacher2Id);
-            teacher2.setFirstName( getRecordValue( record, hdr, CSV_FIELDS.teacher_2_first_name ));
-            teacher2.setLastName( getRecordValue(record, hdr, CSV_FIELDS.teacher_2_last_name ));
-            return teacher2;
+        Teacher createTeacher2( Map<String,Integer> hdrMap, List<String> record){
+            Integer teacherId = getRecordValueAsInteger( record, hdrMap, CSV_FIELDS.teacher_2_id);
+            if ( teacherId == null ) return null;
+            Teacher teacher = new Teacher(teacherId);
+            teacher.setFirstName( getRecordValue( record, hdrMap, CSV_FIELDS.teacher_2_first_name ));
+            teacher.setLastName( getRecordValue(record, hdrMap, CSV_FIELDS.teacher_2_last_name ));
+            return teacher;
         }
 
         public SchoolDocument parse( Reader rdr ){
