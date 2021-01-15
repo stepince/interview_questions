@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<school id="100">
+    <grade id="100">
+        <classroom id="101" name="Steve classroom">
+            <student id="101" last_name="Ince" first_name="Steve"/>
+            <student id="102" last_name="Ince" first_name="Debbie"/>
+            <teacher id="101" last_name="Austime" first_name="Jane"/>
+        </classroom>
+    </grade>
+</school>
