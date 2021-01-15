@@ -348,9 +348,7 @@ public class DocumentConverter {
                     classroom.getStudents().add( createStudent( hdrMap, record));
                     classroom.getTeachers().add( createTeacher1(hdrMap, record));
                     Teacher teacher2 = createTeacher2(hdrMap, record);
-                    if ( teacher2 != null ) {
-                        classroom.getTeachers().add(createTeacher2(hdrMap, record));
-                    }
+                    if ( teacher2 != null ) classroom.getTeachers().add(teacher2);
                 }
                 return doc;
             }
