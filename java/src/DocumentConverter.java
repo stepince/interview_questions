@@ -256,7 +256,6 @@ public class DocumentConverter {
         private static final long serialVersionUID = 1L;
 
         public Teacher(){}
-
         public Teacher(Integer id){
             // just to remove IDE warning for not being used (used by JAXB)
             this();
