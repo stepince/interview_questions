@@ -1,7 +1,8 @@
-import javax.xml.bind.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.*;
 import java.io.*;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -97,7 +98,6 @@ public class DocumentConverter {
         student_first_name,
         student_last_name,
         student_grade;
-
         public static Stream<CSV_FIELDS> stream() {
             return Stream.of(CSV_FIELDS.values());
         }
@@ -110,7 +110,6 @@ public class DocumentConverter {
     static class DocumentException extends RuntimeException {
         private static final long serialVersionUID = 1;
         Exception cause;
-
         public DocumentException(Exception ex ){
             this.cause = ex;
         }
@@ -561,26 +560,12 @@ public class DocumentConverter {
         }
     }
 
-    public static InputStream getResource( String name ){
-        try {
-            Class<?> cls = Class.forName("DocumentConverter");
-            ClassLoader classLoader = cls.getClassLoader();
-            URL url = classLoader.getResource( name );
-            // never use assert in production code
-            assert url != null;
-            return url.openStream();
-        }
-        catch ( Exception ex ){
-            throw new DocumentException(ex);
-        }
-    }
-
     public static void main(String[] args) {
         /* Enter your code here. Read input from STDIN. Print output to STDOUT */
         /* The instructions say files but this states stdin/stdout */
 //        InputStream is = System.in;
 //        InputStream is = getResource("DocumentConverter.xml");
-        InputStream is = getResource("DocumentConverter.txt");
+        InputStream is = ClassLoader.getSystemResourceAsStream("DocumentConverter.txt");
         OutputStream os = System.out;
 
         SchoolDocumentBuilderFactory dbFactory = SchoolDocumentBuilderFactory.getInstance();
