@@ -12,10 +12,10 @@ Space:
 public class ShortestWeightedPath {
     static class Edge {
         int dst;
-        int weight;
-        Edge(int dst,int weight){
+        int wgt;
+        Edge(int dst,int wgt){
             this.dst = dst;
-            this.weight= weight;
+            this.wgt= wgt;
         }
     }
     Map<Integer, List<Edge>> graph = new HashMap<>();
@@ -23,24 +23,23 @@ public class ShortestWeightedPath {
     int shortestWeightedPath(int src, int dst){
 
         Map<Integer,Integer> distMap = new HashMap<>();
-        Map<Integer,Integer> predMap = new HashMap<>();
-//        Queue<Edge> q = new PriorityQueue<>( (a, b)-> distMap.get(a.dst) - distMap.get(b.dst) );
-        Queue<Edge> q = new PriorityQueue<>(Comparator.comparingInt(a -> distMap.get(a.dst)));
-
-        q.add( new Edge(src,0) );
+//        Map<Integer,Integer> predMap = new HashMap<>();
+//        Queue<Edge> q = new PriorityQueue<>( (a, b) -> distMap.get(a) - distMap.get(b) );
+        Queue<Integer> q = new PriorityQueue<>(Comparator.comparingInt(distMap::get));
         distMap.put(src,0);
+        q.add( src);
 
         while( !q.isEmpty() ){
-            Edge e = q.poll();
-            Integer node = e.dst;
+            Integer node = q.poll();
             int dist = distMap.get(node);
-            for ( Edge neighbor: graph.getOrDefault(node,Collections.emptyList()) ) {
-                int nei = neighbor.dst;
-                if ( dist + neighbor.weight < distMap.getOrDefault(nei,Integer.MAX_VALUE) ) {
-                    q.remove( neighbor );
-                    distMap.put(nei,dist + neighbor.weight);
-                    predMap.put ( nei, node );
-                    q.add( neighbor );
+            for ( Edge nei: graph.getOrDefault(node,Collections.emptyList()) ) {
+                int curDist = distMap.getOrDefault(nei.dst,Integer.MAX_VALUE);
+                int newDist = dist + nei.wgt;
+                if ( newDist < curDist ) {
+                    q.remove( nei.dst );
+                    distMap.put( nei.dst, newDist );
+//                    predMap.put ( nei.dst, node );
+                    q.add( nei.dst );
                 }
             }
         }
