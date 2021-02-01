@@ -10,6 +10,7 @@ longest path
 public class LongestStringChain {
     Map<String, Set<String>> graph = new HashMap<>();
 
+    // height of a DAG
     int dfsVisit( String node ){
         int max = 0;
         for ( String child : graph.getOrDefault(node, Collections.emptySet()) ){
@@ -20,8 +21,7 @@ public class LongestStringChain {
 
     public int longestStrChain(String[] words) {
 
-        Set<String> set = new HashSet<>();
-        Collections.addAll(set, words);
+        Set<String> set = new HashSet(Arrays.asList(words));
 
         for ( String word: words){
             StringBuilder sb = new StringBuilder(word);
