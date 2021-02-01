@@ -23,7 +23,7 @@ price    | 3   5   8   9  10  17  17  20
 
 public class RodCuttingDp {
 
-    private static int find(int len, int[] prices, Integer[] mem){
+    private static int find2(int len, int[] prices, Integer[] mem){
         if ( len == 0 ) return 0;
 
         // initialize to the default price for len else 0
@@ -32,20 +32,36 @@ public class RodCuttingDp {
         int max = ( len <= prices.length ) ? prices[len-1] : 0;
        
         for ( int i = 1; i < len; ++i ) {
-            max = Math.max(max,find(len-i,prices,mem) + find(i,prices,mem));
+            max = Math.max(max,find2(len-i,prices,mem) + find2(i,prices,mem));
         }
         return mem[len] = max;
     }
 
-    public static int find(int len, int[] prices){
-        return find(len,prices, new Integer[len+1]);
+
+    public static int find2(int len, int[] prices){
+        return find2(len,prices, new Integer[len+1]);
     }
 
+
+    public static int find1( int len, int[] prices, Integer[] mem){
+        int max = 0;
+        if ( mem[len] != null ) return len;
+        // once i equal to len just exit
+        for ( int i = 0; i < prices.length && i < len; ++i ) {
+            max = Math.max(max, prices[i]+find1( len - i-1, prices));
+        }
+        return mem[len] = max;
+    }
+
+    public static int find1( int len, int[] prices ){
+        return find1(len,prices, new Integer[len+1]);
+    }
     public static void main(String[] args) {
 //        int len = Integer.parseInt(args[0]);
 //        int[] prices = Arrays.stream(args[1].split("[,\\s]+")).mapToInt(Integer::parseInt).toArray();
         int[] prices = {3, 5,   8 ,  9,  10,  17,  17,  20};
         int len = 8;
-        System.out.println(find(len,prices));
+        System.out.println(find1(len,prices));
+        System.out.println(find2(len,prices));
     }
 }
