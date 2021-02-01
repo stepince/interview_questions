@@ -48,10 +48,7 @@ public class ShortestSubarrayK {
         int[] arry = {-2,4,-1,6,11,15,2,12,9,3,};
         int K = 10;
 
-        Class<?> cls = Class.forName("ShortestSubarrayK");
-        ClassLoader classLoader = cls.getClassLoader();
-        URL url = classLoader.getResource("ShortestSubarrayK.txt");
-        assert url != null;
+        URL url = ClassLoader.getSystemResource("ShortestSubarrayK.txt");
         List<String> lines = Files.readAllLines(Paths.get(url.toURI()));
         String[] values = lines.get(0).split(",");
 

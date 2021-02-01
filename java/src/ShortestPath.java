@@ -14,7 +14,7 @@ algo:
    distance(src)=0;
    while( !queue.empty()) {
        node = queue.remove();
-       adj = loop all adjancentcy node
+       adj = loop all adjacency node
        if ( distance(adj) != -1  ){
            queue.add(adj)
            distance(adj) = distance(node) + 1;
@@ -28,19 +28,19 @@ public class ShortestPath {
     // Graph node class
     public static class Node {
         private final int value;
-        private final List<Node> children = new LinkedList<>();
+        private final List<Node> adjList = new LinkedList<>();
         
         // Basic constructor
         public Node(int value) {
             this.value = value;
         }
 
-        public void addChild(Node n) {
-            this.children.add(n);
+        public void add(Node n) {
+            this.adjList.add(n);
         }
 
-        public List<Node> getChildren(){
-            return this.children;
+        public List<Node> getAll(){
+            return this.adjList;
         }
     }
 
@@ -53,11 +53,11 @@ public class ShortestPath {
 
          while (!queue.isEmpty()){
              Node n = queue.poll();
-             for ( Node child: n.getChildren() ){
+             for ( Node nei: n.getAll() ){
                  // this is also a visited check
-                 if ( distance[child.value] == -1 ) {
-                     queue.add(child);
-                     distance[child.value] = distance[n.value] + 1;
+                 if ( distance[nei.value] == -1 ) {
+                     queue.add(nei);
+                     distance[nei.value] = distance[n.value] + 1;
                  }
              }
          }
@@ -79,11 +79,11 @@ public class ShortestPath {
         for (int i = 0; i < graph.length; i++) {
             graph[i] = new Node(i);
         }
-        graph[0].addChild(graph[1]);
-        graph[0].addChild(graph[2]);
-        graph[1].addChild(graph[4]);
-        graph[3].addChild(graph[0]);
-        graph[3].addChild(graph[2]);
+        graph[0].add(graph[1]);
+        graph[0].add(graph[2]);
+        graph[1].add(graph[4]);
+        graph[3].add(graph[0]);
+        graph[3].add(graph[2]);
         System.out.println( find(graph,3,2));
      }
 
