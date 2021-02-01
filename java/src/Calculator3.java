@@ -36,21 +36,20 @@ public class Calculator3 {
         int sign = 1;
         while( ! opers.isEmpty() ){
             char oper = opers.remove();
+            int num1 = nums.remove();
             if ( oper == '-' ){
-                result += sign * nums.remove();
+                result += sign * num1;
                 sign = -1;
             }
             else if ( oper == '+' ){
-                result += sign * nums.remove();
+                result += sign * num1;
                 sign = 1;
             }
             else if ( oper == '/' ){
-                int num1 = nums.remove();
                 int num2 = nums.remove();
                 nums.addFirst(num1/num2 );
             }
             else if ( oper == '*' ){
-                int num1 = nums.remove();
                 int num2 = nums.remove();
                 nums.addFirst(num1*num2 );
             }
