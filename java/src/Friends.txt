@@ -1,3 +1,6 @@
 fred: larry, bill
-amanda: larry, tom
+amanda: steve, larry, tom
 tom: fred
+steve: joe
+joe: garry
+garry: fred
