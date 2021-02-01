@@ -50,7 +50,7 @@ public class LongestMatrixPath {
 
     public static void main(String[] args) {
 //        int[][] matrix = new int[args.length][];
-//        for ( int i = 0; i < args.length; ++i ){
+//        fo.r ( int i = 0; i < args.length; ++i ){
 //            matrix[i] = Arrays.stream(args[i].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
 //        }
         int[][] matrix =
