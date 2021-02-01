@@ -32,18 +32,21 @@ public class LongestWeightedPath {
         graph.computeIfAbsent(edge.src, (key)->new ArrayList<>()).add(edge);
     }
 
-    void topSortUtil(Integer node, Deque<Integer> results ){
+    void topSortUtil(Integer node, Set<Integer> visited, Deque<Integer> results ){
         for ( Edge edge: graph.getOrDefault(node,Collections.emptyList()) ){
-            topSortUtil(edge.dst, results);
+            if ( ! visited.contains(edge.dst) ) {
+                visited.add(node);
+                topSortUtil(edge.dst, visited, results);
+            }
         }
         results.addFirst(node);
     }
 
-    public List<Integer> topSort(){
+    // just nodes that can be reached from src
+    public List<Integer> topSort( int src ){
         LinkedList<Integer> results = new LinkedList<>();
-        for ( Integer node : graph.keySet()  ) {
-            topSortUtil(node, results);
-        }
+        Set<Integer> visited = new HashSet<>();
+        topSortUtil(src, visited, results);
         return results;
     }
 
@@ -57,12 +60,13 @@ public class LongestWeightedPath {
         int max = 0;
         Map<Integer,Integer> distMap = new HashMap<>();
         distMap.put(src,0);
-        for ( Integer node : topSort() ){
+        for ( Integer node : topSort(src) ){
             Integer dist = distMap.getOrDefault(node,Integer.MIN_VALUE);
             if ( dist !=  Integer.MIN_VALUE ) {
                 for (Edge e : graph.getOrDefault(node, Collections.emptyList())) {
                     int newDist = dist + e.wgt;
-                    if ( newDist > distMap.getOrDefault(e.dst, Integer.MIN_VALUE)) {
+                    int curDist = distMap.getOrDefault(e.dst, Integer.MIN_VALUE);
+                    if ( newDist > curDist ) {
                         max = Math.max(max, distMap.merge(e.dst, newDist, (prev, curr) -> curr));
                     }
                 }
