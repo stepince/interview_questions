@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /*
-    Interview question to convert a file from one format to another
+    Convert a file from one format to another
     xml -> csv
     csv -> xml
 
