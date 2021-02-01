@@ -8,16 +8,13 @@ public class MostCommonWord {
 
     static String find(String paragraph){
 
-        Map<String,Integer> freq = new HashMap<>();
-        //PriorityQueue<String> queue =  new PriorityQueue<>( (a,b)-> freq.get(b) - freq.get(a) );
+        Map<String,Integer> freqMap = new HashMap<>();
         String maxWord = null;
         String[] words = paragraph.split("[\\s.,!?]");
         for ( String word: words ){
             word = word.trim();
             if ( word.length() == 0 || BANNED_WORDS.contains(word) ) continue;
-//            freq.put( word, freq.getOrDefault(word,0)+1);
-            freq.merge(word, 1, Integer::sum);
-            if ( freq.get(word) > freq.getOrDefault(maxWord,0) ) {
+            if ( freqMap.merge(word, 1, Integer::sum) > freqMap.getOrDefault(maxWord,0) ) {
                 maxWord = word;
             }
         }
@@ -25,10 +22,7 @@ public class MostCommonWord {
     }
 
     public static void main(String[] args) throws Exception {
-        Class<?> cls = Class.forName("MostCommonWord");
-        ClassLoader classLoader = cls.getClassLoader();
-        URL url = classLoader.getResource("MostCommonWord.txt");
-        assert url != null;
+        URL url = ClassLoader.getSystemResource("MostCommonWord.txt");
         List<String> lines = Files.readAllLines(Paths.get(url.toURI()));
         long t = System.currentTimeMillis();
         String paragraph = String.join(System.lineSeparator(),lines);
