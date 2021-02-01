@@ -22,10 +22,7 @@ public class ConnectedCities {
     private final Map<String, Set<String>> cities = new HashMap<>();
 
     public ConnectedCities() throws Exception {
-        Class<?> cls = Class.forName("ConnectedCities");
-        ClassLoader classLoader = cls.getClassLoader();
-        URL url = classLoader.getResource("ConnectedCities.txt");
-        assert url != null;
+        URL url = ClassLoader.getSystemResource( "ConnectedCities.txt");
         Files.lines(Paths.get(url.toURI())).filter(s->!s.isEmpty()).forEach( line -> {
             String[] cityPair = line.split("\\s*,\\s*");
             if (cityPair.length != 2) {
