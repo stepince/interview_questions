@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.stream.Collector;
 
 /*
 https://www.geeksforgeeks.org/trie-insert-and-search/
@@ -43,22 +42,21 @@ public class Trie {
         for(String word: words) add(word);
     }
 
-    private List<String> getAllWords(Trie t, String prefix){
-        List<String> words = new ArrayList<>();
-        if ( t.word ) words.add(prefix);
-        for ( Character ch : t.nodes.keySet() ){
-            Trie currTrie =  t.nodes.get(ch);
-            words.addAll( getAllWords(currTrie,prefix + ch ));
+    private void addAllWords(Trie currTrie, String prefix, List<String> results){
+        if ( currTrie.word ) results.add(prefix);
+        for ( Character ch : currTrie.nodes.keySet() ){
+            addAllWords(currTrie.nodes.get(ch),prefix + ch, results );
         }
-        return words;
     }
 
     public List<String> search(String prefix){
         Trie currTrie = this;
+        List<String> results = new ArrayList<>();
         for( char ch: prefix.toCharArray() ){
-            if (  (currTrie = currTrie.nodes.get(ch)) == null ) return Collections.emptyList();
+            if (  (currTrie = currTrie.nodes.get(ch)) == null ) return results;
         }
-        return getAllWords(currTrie,prefix);
+        addAllWords(currTrie, prefix, results );
+        return results;
     }
 
     public static void main(String[] args){
