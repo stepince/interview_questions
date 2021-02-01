@@ -5,55 +5,62 @@ import java.util.Queue;
 
 public class MedianQueue extends LinkedList<Integer> {
 
-    Queue<Integer> minQueue = new PriorityQueue<>();
-    Queue<Integer> maxQueue = new PriorityQueue<>( (a,b)->b-a);
+    Queue<Integer> smallQ = new PriorityQueue<>( (a,b)->b-a );
+    Queue<Integer> largeQ = new PriorityQueue<>();
 
     public boolean add(Integer item){
-        if ( minQueue.size() == 0 && maxQueue.size() == 0 ) {
-            minQueue.add(item);
-        }
-        // it is important that large values go in the minQueue
-        else if ( minQueue.size() != 0 && item > minQueue.peek() ) {
-            minQueue.add(item);
+        if ( smallQ.size() > largeQ.size() ){
+            largeQ.add(item);
         }
         else {
-            maxQueue.add(item);
+            smallQ.add(item);
         }
-        // adjust
-        if( maxQueue.size() - minQueue.size() > 1) minQueue.add(maxQueue.remove());
-        if( minQueue.size() - maxQueue.size() > 1) maxQueue.add(minQueue.remove());
+        adjust();
         return super.add(item);
     }
 
     public Integer remove(){
         Integer item = super.remove();
-        if (minQueue.contains(item)){
-            minQueue.remove(item);
+        if (largeQ.contains(item)){
+            largeQ.remove(item);
         }
         else {
-            maxQueue.remove(item);
+            smallQ.remove(item);
         }
-
-        if( maxQueue.size() - minQueue.size() > 1) minQueue.add(maxQueue.remove());
-        if( minQueue.size() - maxQueue.size() > 1 ) maxQueue.add(minQueue.remove());
-
+        while( largeQ.size() + 1 > smallQ.size() ) smallQ.add( largeQ.remove() );
+        while( smallQ.size() + 1 > largeQ.size() ) largeQ.add( smallQ.remove() );
+        adjust();
         return item;
     }
 
-    public Integer median(){
-        if ( minQueue.size() == 0 && maxQueue.size() == 0 ) return null;
-        if ( minQueue.size() > maxQueue.size() ) return minQueue.peek();
-        if ( maxQueue.size() > minQueue.size() ) return maxQueue.peek();
-        // == case
-        return (maxQueue.peek() + minQueue.peek())/2;
+    void adjust(){
+        while ( smallQ.size() > 0 && largeQ.size() > 0  && smallQ.peek() > largeQ.peek() ) {
+            smallQ.add(largeQ.remove());
+            largeQ.add(smallQ.remove());
+        }
+    }
+    public double median(){
+        if ( smallQ.size() == 0 && largeQ.size() == 0 ) {
+            return 0;
+        }
+        else if (smallQ.size() > largeQ.size()) {
+            return smallQ.peek();
+        }
+        else if (largeQ.size() > smallQ.size()) {
+            return largeQ.peek();
+        }
+        else {
+            return (float)(smallQ.peek() + largeQ.peek()) / 2;
+        }
     }
 
+
     public boolean isEmpty(){
-        return minQueue.isEmpty() && maxQueue.isEmpty();
+        return smallQ.isEmpty() && largeQ.isEmpty();
     }
 
     public int size(){
-        return minQueue.size() + maxQueue.size();
+        return smallQ.size() + largeQ.size();
     }
 
     public static void main(String[] args){
