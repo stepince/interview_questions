@@ -15,6 +15,7 @@ public class MRUCache {
 
     Map<String,Integer> mruMap = new HashMap<>();
 //    Queue<String> minQueue = new PriorityQueue<>( (a, b)->mruMap.get(a) - mruMap.get(b));
+    // minQueue and maxQueue contains the same element, just in reverse order
     Queue<String> minQueue = new PriorityQueue<>(Comparator.comparingInt(a -> mruMap.get(a)));
     Queue<String> maxQueue = new PriorityQueue<>( (a, b)->mruMap.get(b) - mruMap.get(a));
     public MRUCache(int capactiy){
