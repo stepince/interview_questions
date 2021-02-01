@@ -270,7 +270,7 @@ public class DocumentConverter {
 
         public SchoolDocument parse( Reader rdr ){
             try {
-                SchoolDocument doc =  new SchoolDocument();
+                SchoolDocument doc = new SchoolDocument();
                 doc.setFileType(FileType.XML);
                 JAXBContext jc = JAXBContext.newInstance( School.class );
                 Unmarshaller u = jc.createUnmarshaller();
@@ -468,7 +468,7 @@ public class DocumentConverter {
             try {
                 rdr.mark(DETECT_LINE_LEN);
                 String hdr = rdr.readLine();
-                return FileType.stream().filter( x -> hdr.startsWith(  FILE_TYPE_DETECT_MAP.get(x)  ) ).findFirst().orElse( FileType.UNKNOWN );
+                return FileType.stream().filter( x -> hdr.startsWith( FILE_TYPE_DETECT_MAP.get(x) ) ).findFirst().orElse( FileType.UNKNOWN );
             }
             catch ( Exception ex ){
                 throw new DocumentException(ex);
