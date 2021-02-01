@@ -23,13 +23,22 @@ O(2^n)
 
 public class RodCutting {
 
-    public static int find(int len, int[] prices){
+    public static int find2(int len, int[] prices){
         if ( len == 0 ) return 0;
         // initialize to the default price for len else 0
         int max = ( len <= prices.length ) ? prices[len-1] : 0;
 
         for ( int i = 1; i < len; ++i ) {
-            max = Math.max(max,find(len-i,prices) + find(i,prices));
+            max = Math.max(max,find2(len-i,prices) + find2(i,prices));
+        }
+        return max;
+    }
+
+    public static int find1( int len, int[] prices){
+        int max = 0;
+        // once i equal to len just exit
+        for ( int i = 0; i < prices.length && i < len; ++i ) {
+            max = Math.max(max, prices[i]+find1( len - i-1, prices));
         }
         return max;
     }
@@ -39,6 +48,7 @@ public class RodCutting {
 //        int len = Integer.parseInt(args[1]);
         int[] prices = {3, 5,   8 ,  9,  10,  17,  17,  20};
         int len = 8;
-        System.out.println(find(len,prices));
+        System.out.println(find1(len,prices));
+        System.out.println(find2(len,prices));
     }
 }
