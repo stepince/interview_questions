@@ -68,11 +68,8 @@ public class SortLogLines {
         }
     }
     public static void main(String[] args) throws Exception {
-        Class<?> cls = Class.forName("SortLogLines");
-        ClassLoader classLoader = cls.getClassLoader();
         String input = "SortLogLines.txt";
-        URL url = classLoader.getResource(input);
-        assert url != null;
+        URL url = ClassLoader.getSystemResource(input);
         List<String> sortedLines = Files.lines(Paths.get(url.toURI())).filter(s -> !s.isEmpty()).sorted(new MyComparator()).collect(Collectors.toList());
         for (String sortedLine : sortedLines) {
             System.out.println(sortedLine);
