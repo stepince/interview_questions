@@ -7,19 +7,18 @@ import java.util.*;
     Amazon interview question.
     Find intermediate friends.
     Degrees of separation
+
+    ALGORITHM is BFS with a predecessor map
  */
 public class Friends {
 
     // vertices
-    public Map<String, Set<String>> friendsMap = new HashMap<>();
+    public Map<String, List<String>> friendsMap = new HashMap<>();
 
     // This is not needed for implementation.
     // Can assume getFriends() method exist
     public Friends() throws Exception {
-        Class<?> cls = Class.forName("Friends");
-        ClassLoader classLoader = cls.getClassLoader();
-        URL url = classLoader.getResource("Friends.txt");
-        assert url != null;
+        URL url  = ClassLoader.getSystemResource("Friends.txt");
         Files.lines(Paths.get(url.toURI())).filter(s->!s.isEmpty()).forEach(line -> {
             String[] friendList = line.split(":");
             if (friendList.length != 2) {
@@ -27,47 +26,52 @@ public class Friends {
                 return;
             }
             String person = friendList[0].trim();
-            friendsMap.computeIfAbsent(person, (k)-> new HashSet<>()).addAll(Arrays.asList(friendList[1].trim().split("\\s*,\\s*")));
+            friendsMap.computeIfAbsent(person, (k)-> new ArrayList<>()).addAll(Arrays.asList(friendList[1].trim().split("\\s*,\\s*")));
             for( String friend: friendsMap.get(person)) {
-                friendsMap.computeIfAbsent(friend, (k)-> new HashSet<>()).add(person);
+                friendsMap.computeIfAbsent(friend, (k)-> new ArrayList<>()).add(person);
             }
         });
-        if ( this.friendsMap.size() == 0 ) {
-            System.err.println("Invalid input file: no cites, Friends.txt");
-        }
     }
-    public Set<String> getFriends(String person){
+    public List<String> getFriends(String person){
         return friendsMap.get(person);
     }
 
-    // dfsVisit
-    public boolean findIntermediateFriendsUtil(String personA, String personB, Stack<String> path, Set<String> visited){
+    public List<String> findIntermediateFriendsBfs(String personA, String personB){
+        Set<String> visited = new HashSet<>();
+        LinkedList<String> path = new LinkedList<>();
+        Queue<String> queue = new ArrayDeque<>();
+        queue.add(personA);
         visited.add(personA);
-        path.push(personA);
-        for ( String friend: getFriends(personA) ){
-             if ( personB.equals(friend)) return true;
-             if ( visited.contains(friend)) continue;
-             if ( findIntermediateFriendsUtil(friend, personB, path, visited ) ) return true;
-        }
-        path.pop();
-        return false;
-    }
+        Map<String,String> predMap = new HashMap<>();
 
-    // dfs (find path)
-    public List<String> findIntermediateFriends(String personA, String personB){
-
-        for ( String friend: getFriends(personA) ){
-            Stack<String> path = new Stack<>();
-            if ( findIntermediateFriendsUtil(friend, personB, path, new HashSet<>(Collections.singletonList(personA)) ) ) {
-                return path;
+        outer: while( !queue.isEmpty() ){
+            String friend = queue.remove();
+            for ( String nei : getFriends(friend)){
+                if ( nei.equals(personB)){
+                    predMap.put(nei,friend);
+                    break outer;
+                }
+                else if ( !visited.contains(nei) ){
+                    visited.add(nei);
+                    queue.add(nei);
+                    predMap.put(nei,friend);
+                }
             }
         }
-        return null;
+
+        String cur = personB;
+        while ( predMap.containsKey(cur) ){
+            // ignore dest person
+            if ( !cur.equals(personB) ) path.addFirst(cur);
+            cur = predMap.get(cur);
+        }
+        return path;
     }
 
     public static void main( String[] args ) throws Exception {
         String personA = "amanda";
         String personB = "fred";
-        System.out.println( new Friends().findIntermediateFriends(personA,personB));
+        Friends friends = new Friends();
+        System.out.println( friends.findIntermediateFriendsBfs(personA,personB));
     }
 }
