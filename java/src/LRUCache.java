@@ -36,8 +36,8 @@ class LRUCache {
     public int get(int key) {
         Entry entry = map.get(key);
         if ( entry == null ) return -1;
-        entry.age=++counter;
         queue.remove(entry);
+        entry.age=++counter;
         queue.add(entry);
         return entry.value;
     }
