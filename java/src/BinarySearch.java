@@ -6,13 +6,11 @@ public class BinarySearch {
     public static int find(int[] nums, int target){
         int lo = 0;
         int hi =  nums.length;
-        int idx = - 1;
         while ( lo < hi ){
             int mid = lo + (hi - lo) / 2;
             // int mid = (lo + hi)/2;
             if ( nums[mid] == target){
-                idx = mid;
-                break;
+                return mid;
             }
             else if ( target < nums[mid] ){
                 hi = mid;
@@ -21,7 +19,7 @@ public class BinarySearch {
                 lo = mid +1;
             }
         }
-        return idx;
+        return -1;
     }
 
     public static void main(String[] args){
