@@ -23,9 +23,8 @@ public class ReverseDoubleLinkedList {
     public static Node reverse(Node node){
         Node prev = null;
         while ( node != null ){
-            Node next = node.next;
-            node.next = node.prev;
-            node.prev = next;
+            Node next = node.prev = node.next;
+            node.next = prev;
             prev = node;
             node = next;
         }
