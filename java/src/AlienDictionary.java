@@ -24,19 +24,24 @@ public class AlienDictionary {
         graph.computeIfAbsent(ch1, (key)->new HashSet<>()).add(ch2);
     }
 
-    void topSortUtil( Character node, Deque<Character> results){
-        for ( Character child : graph.getOrDefault(node,Collections.emptySet() ) ){
-            topSortUtil(child,results);
+    void topSortUtil( Character node, Set<Character> visited, Deque<Character> results){
+        visited.add(node);
+        for ( Character nei : graph.getOrDefault(node,Collections.emptySet() ) ){
+            if ( !visited.contains(nei) ){
+                topSortUtil(nei,visited,results);
+            }
         }
         results.addFirst(node);
     }
 
-
     /* return the alphabet in sorted order */
     public List<Character> topSort(){
+        Set<Character> visited = new HashSet<>();
         LinkedList<Character> results = new LinkedList<>();
         for( Character node: graph.keySet() ){
-            topSortUtil( node, results );
+            if ( !visited.contains(node) ) {
+                topSortUtil( node, visited, results );
+            }
         }
         return results;
     }
