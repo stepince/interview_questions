@@ -6,6 +6,8 @@ Time:
 
 Auxiliary Space:
     O(n*2^n)
+
+    note: visited set is needed if it is not an DAG
  */
 public class AllPaths {
 
@@ -19,28 +21,29 @@ public class AllPaths {
         }
     }
 
-    void allPathsUtil(Node node, List<List<Node>> results, Set<String> visited, Deque<Node> path, String dst ){
+    void allPathsUtil(Node node, String dst, Set<String> visited, List<List<Node>> paths, Deque<Node> path ){
         if ( node.value.equals(dst) ){
-            results.add( new ArrayList<>(path) );
+            paths.add( new ArrayList<>(path) );
             return;
         }
-        visited.add(node.value);
         for ( Node nei: node.neighbors ){
             if ( !visited.contains(nei.value)) {
-                path.addLast(nei);
-                allPathsUtil(nei, results, visited, path, dst);
+                visited.add(node.value);
+                // addLast
+                path.add(nei);
+                allPathsUtil(nei, dst, visited, paths, path);
                 path.removeLast();
+                visited.remove(node.value);
             }
         }
-        visited.remove(node.value);
     }
 
     List<List<Node>> findAllPaths( Node n, String dst ){
-        List<List<Node>> results = new ArrayList<>();
+        List<List<Node>> paths = new ArrayList<>();
         Deque<Node> path = new ArrayDeque<>();
         path.add(n);
-        allPathsUtil(n, results, new HashSet<>(), path, dst );
-        return results;
+        allPathsUtil(n, dst, new HashSet<>(), paths, path );
+        return paths;
     }
 
     public static void main(String[] args){
