@@ -11,6 +11,7 @@ public class Atoi {
         long val = 0;
         long sign = 1;
         int start = 0;
+         
         if (start == chars.length) return 0;
         if ( chars[start] == '-') {
            ++start;
