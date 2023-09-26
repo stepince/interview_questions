@@ -9,6 +9,7 @@ and return them in any order.
 The graph is given as follows:  the nodes are 0, 1, ..., graph.length - 1.
 graph[i] is a list of all nodes j for which the edge (i, j) exists.
 
+weirdly worded question src = 0, dst = graph.length -1,  graph[i] is a a list of all the nodes it is connected
 Time:
 O(N 2^N)
 
@@ -16,24 +17,21 @@ Space
 O(N 2^N)
  */
 public class AllPathsGraph {
-
-    static void findAllPaths(int[][] graph, List<List<Integer>> results, Deque<Integer> path, int src, int dst ){
-        if ( src == dst ){
-            results.add(new ArrayList<>(path));
-            return;
+    void allPathsUtil(int[][] graph, Integer src,Deque<Integer> l, List<List<Integer>> results) {
+        if(src.equals(graph.length-1)) {
+           results.add(new ArrayList<>(l));
+           return;
         }
-        for ( int nei: graph[src] ) {
-            path.addLast(nei);
-            findAllPaths(graph,results,path,nei,dst);
-            path.removeLast();
+        for (int nei: graph[src])  {
+            l.add(nei);
+            allPathsUtil(graph,nei,l,results);
+            l.removeLast();
         }
     }
 
-    public static List<List<Integer>> allPathsSourceTarget(int[][] graph) {
+    public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
         List<List<Integer>> results = new ArrayList<>();
-        Deque<Integer> path = new ArrayDeque<>();
-        path.add(0);
-        findAllPaths(graph,results,path,0,graph.length-1 );
+        allPathsUtil(graph, 0,new ArrayDeque(List.of(0)), results);
         return results;
     }
 
