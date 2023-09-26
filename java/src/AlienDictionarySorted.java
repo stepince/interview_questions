@@ -19,29 +19,25 @@ Time:
 public class AlienDictionarySorted {
 
     public boolean isAlienSorted(String[] words, String order) {
-        Map<Character,Integer> sortedMap = new HashMap<>();
-        for ( int i = 0; i < order.length(); ++i ){
-            sortedMap.put(order.charAt(i),i);
+        char[] chars = order.toCharArray();
+        for(int i = 0; i < chars.length; ++i) {
+            orderMap.put(chars[i],i);
         }
-
-        for ( int i = 1; i < words.length; ++i ){
-            String word1 = words[i-1];
-            String word2 = words[i];
-            int len = Math.min(word1.length(),word2.length());
-            for ( int j = 0 ; j < len ;  ++j ) {
-                Character ch1 = word1.charAt(j);
-                Character ch2 = word2.charAt(j);
-                if ( !ch1.equals(ch2) ) {
-                    if ( sortedMap.get(ch1) < sortedMap.get(ch2) ) break;
-                    else return false;
-                }
-                // we have are done consuming chars, make sure word1 is smaller
-                else if ( j + 1 == len && word1.length() > word2.length() ){
-                    return false;
-                }
-            }
+        for( int i = 1; i < words.length; ++i ) {
+           char[] chars1 = words[i-1].toCharArray();
+           char[] chars2 = words[i].toCharArray();
+           int j = 0;
+           int min = Math.min(chars1.length,chars2.length);
+           for (j = 0; j < min; ++j) {
+               if (chars1[j] == chars2[j]) continue;
+               if( orderMap.get(chars1[j]) > orderMap.get(chars2[j]) ) return false;
+               break;
+           }
+           if (j == min && chars1.length > chars2.length ) {
+               return false;
+           }
         }
-        return true;
+        return true;;
     }
 
     public static void main(String[] args){
