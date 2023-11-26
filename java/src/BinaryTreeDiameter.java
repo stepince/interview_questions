@@ -33,18 +33,18 @@ public class BinaryTreeDiameter {
         }
     }
 
-    static int height( Node node, IntWrapper diameter ){
-        if ( node == null ) return 0;
-        int left = height(node.left, diameter);
-        int right = height(node.right, diameter);
+    static int getHeight( Node node, IntWrapper diameterIntWrapper ){
+        if ( node == null ) return -1;
+        int left = getHeight(node.left, diameterIntWrapper);
+        int right = getHeight(node.right, diameterIntWrapper);
         int height = Math.max(left,right) + 1;
-        diameter.val = Math.max(diameter.val, left + right);
+        diameterIntWrapper.val = Math.max(diameterIntWrapper.val, Math.max(height, left + right + 2));
         return height;
     }
 
     public static int diameter( Node root ){
         IntWrapper diameter = new IntWrapper();
-        height(root,diameter);
+        getHeight(root,diameter);
         return diameter.val;
     }
 
@@ -54,7 +54,6 @@ public class BinaryTreeDiameter {
         tree.right = new Node(3);
         tree.left.left = new Node(4);
         tree.left.right = new Node(5);
-
         System.out.println("The diameter of given binary tree is : "  + diameter(tree));
     }
 

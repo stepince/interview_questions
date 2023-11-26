@@ -40,12 +40,25 @@ public class PrintSubArrays {
         }
     }
 
+    public static void print3(List<?> arr ){
+        int len = arr.size();
+        for ( int i = 0; i < len ; ++i ){
+            for ( int j = i; j < len; ++j ){
+                System.out.println(arr.subList(i,j+1));
+            }
+        }
+    }
+
+
     public static void main(String[] args){
         // string to char
 //        List<Character> arr = Stream.of(args[0].split("\\s*,\\s*")).map(x->x.charAt(0)).collect(Collectors.toList());
-        List<Integer> arr = List.of( 1, -2,  4, -5, 1  );
-        print(arr);
+//        List<Integer> arr = List.of( 1, -2,  4, -5, 1  );
+        List<Integer> arr = List.of( 1, 3, 4, 5 );
+//        print(arr);
         System.out.println("------------");
         print2(arr);
+        System.out.println("------------");
+        print3(arr);
     }
 }

@@ -13,6 +13,8 @@ Note: The opponent is as clever as the user.
 Awesome each user takes the max between the end
 5, 3, 7, 10 : The user collects maximum value as 15(10 + 5)
 8, 15, 3, 7 : The user collects maximum value as 22(7 + 15)
+
+optimization problem
 */
 
 public class MaxCoinValueDp {

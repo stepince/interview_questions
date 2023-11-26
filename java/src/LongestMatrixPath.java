@@ -24,16 +24,15 @@ public class LongestMatrixPath {
         return Math.max(Math.max(a,b), Math.max(c,d));
     }
 
-    // prev == null starting point
-    private static int findLongestPath(int[][] matrix,int x, int y, Integer prev, int total, Set<String> visited) {
+    private static int findLongestPath(int[][] matrix, int x, int y, int prev, Set<String> visited) {
         String key = x + ":" + y;
-        if ( x < 0 || x >= matrix.length || y < 0 || y >= matrix[0].length ||  (prev != null && prev+1 != matrix[x][y] ) || visited.contains(key) ) return total;
+        if ( x < 0 || x >= matrix.length || y < 0 || y >= matrix[0].length || ( prev != Integer.MIN_VALUE && Math.abs(prev - matrix[x][y]) != 1) || visited.contains(key) ) return 0;
         visited.add(key);
-        int left = findLongestPath(matrix,x-1,y, matrix[x][y], total+1, visited);
-        int right = findLongestPath(matrix,x+1,y, matrix[x][y], total+1, visited);
-        int up = findLongestPath(matrix,x,y+1, matrix[x][y], total+1, visited);
-        int down = findLongestPath(matrix,x,y-1, matrix[x][y], total+1, visited);
-        total = max(left,right,up,down);
+        int left = findLongestPath(matrix,x-1,y, matrix[x][y], visited);
+        int right = findLongestPath(matrix,x+1,y, matrix[x][y], visited);
+        int up = findLongestPath(matrix,x,y+1, matrix[x][y], visited);
+        int down = findLongestPath(matrix,x,y-1, matrix[x][y], visited);
+        int total = 1 + max(left,right,up,down);
         visited.remove(key);
         return total;
     }
@@ -42,7 +41,7 @@ public class LongestMatrixPath {
         int max = 0;
         for ( int i = 0;i <matrix.length;++i){
             for ( int j = 0;j < matrix[0].length;++j){
-                max = Math.max(max,findLongestPath(matrix,i,j,null,0,new HashSet<>()));
+                max = Math.max(max, findLongestPath(matrix,i,j, Integer.MIN_VALUE, new HashSet<>()));
             }
         }
         return max;

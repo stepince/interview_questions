@@ -41,7 +41,8 @@ public class QuickSort {
     }
 
     static public void main(String[] args){
-        int[] arr = Arrays.stream(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+//        int[] arr = Arrays.stream(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
+        int[] arr = {7,6,5,4,3,2,1};
         sort(arr);
         System.out.println(Arrays.toString(arr));
     }

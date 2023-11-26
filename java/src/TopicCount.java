@@ -29,6 +29,7 @@ public class TopicCount {
         String all;
     }
 
+
     static final String url = "https://en.wikipedia.org/w/api.php?action=parse&format=json&page=";
 
     static String encode(String value ) {

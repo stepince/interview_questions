@@ -11,6 +11,8 @@ Note: The opponent is as clever as the user.
 Awesome each user takes the max between the end
 5, 3, 7, 10 : The user collects maximum value as 15(10 + 5)
 this is max min problem
+
+optimization problem
 */
 
 public class MaxCoinValue {

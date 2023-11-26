@@ -12,7 +12,7 @@ public class PrimeNumberGenerator {
         for (int i = 2; i*i <= n; ++i){
             if ( prime[i] ){
                 // following a prime number pattern
-                //  i^2, i^2+i, i^2+2i, i^2+3i, ..., not exceeding n do
+                //  i^2, i^2+i, i^2+2i, i^2+3i, ..., not exceeding n do (all multiples of i are not prime)
                 for (int j = i*i; j <= n; j+=i ) {
                     prime[j] = false;
                 }

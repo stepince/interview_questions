@@ -11,6 +11,8 @@ import java.util.Map;
 * input array "1,20,20,-10,-10,20,3"  sum: 40
 * output: 2
 *
+*
+*   https://leetcode.com/problems/subarray-sum-equals-k/
  */
 public class SubArrayCount {
 

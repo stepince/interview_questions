@@ -8,6 +8,11 @@ public class ArraysTupleIntersection {
     public static class Tuple {
         int start;
         int end;
+        public Tuple(int start, int end){
+            this.start = start;
+            this.end = end;
+        }
+        public Tuple(){}
         public String toString(){
             return this.start +"," + this.end;
         }
@@ -41,8 +46,8 @@ public class ArraysTupleIntersection {
     }
 
     public static List<Tuple> find2(int[][] arr1, int[][] arr2 ){
-        BitSet set1 = new BitSet( arr1[arr1.length-1][1]+1 );
-        BitSet set2 = new BitSet( arr2[arr2.length-1][1]+1 );
+        BitSet set1 = new BitSet();
+        BitSet set2 = new BitSet();
         List<Tuple> l = new ArrayList<>();
         for (int[] ints : arr1) {
             set1.set(ints[0], ints[1] + 1, true);
@@ -51,18 +56,16 @@ public class ArraysTupleIntersection {
             set2.set(ints[0], ints[1] + 1, true);
         }
         set1.and(set2);
-        for ( int i = 0; i < set1.size(); ){
-            if ( !set1.get(i) ) {
-                ++i;
-                continue;
-            }
-            Tuple tuple = new Tuple();
-            tuple.start = i;
-            while( i < set1.size() && set1.get(i) ) tuple.end=i++;
-            l.add(tuple);
+
+        int start = 0;
+        while ( (start = set1.nextSetBit(start)) > -1 ){
+            int end = set1.nextClearBit(start);
+            l.add(new Tuple(start,end-1));
+            start = end;
         }
         return l;
     }
+
     public static void main(String[] args){
         int[][] arr1 = {{0,4},{7,8},{10,11}};
         int[][] arr2 = {{1,5},{7,8},{10,11}};

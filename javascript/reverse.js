@@ -18,17 +18,15 @@ function reverse(node) {
 }
 
 function reverseDouble(node) {
-   var last = null;
    var current = node;
+   var prev = null;
    while(current != null) {
-       // swap
+       //swap
        let next = current.next;
        current.next = current.prev;
        current.prev = next;
-       // store last
-       last = current;     
-       // move to the next 
+       prev = current;     
        current = next;
    }
-   return last;
+   return prev;
 }

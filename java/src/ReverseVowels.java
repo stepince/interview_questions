@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 /*
  * reverse the the vowels in a word
@@ -18,6 +15,24 @@ import java.util.Stack;
  */
 public class ReverseVowels {
 
+    static void swap(char[] chars, int i, int j){
+        char temp = chars[i];
+        chars[i] = chars[j];
+        chars[j] = temp;
+    }
+
+    public static String reverseVowels3(String str) {
+        char[] chars = str.toCharArray();
+        Set<Character> vowels = Set.of('a','e','i','o','u');
+        List<Integer> vowelsIndices = new ArrayList<>();
+        for ( int i = 0; i < chars.length; ++i ) {
+            if ( vowels.contains(chars[i]) ) vowelsIndices.add(i);
+        }
+        for ( int l = 0, r = vowelsIndices.size()-1; l < r;  ++l, --r ){
+            swap(chars,vowelsIndices.get(l), vowelsIndices.get(r));
+        }
+        return new String(chars);
+    }
     public static String reverseVowels(String str) {
         Set<Character> vowels = Set.of('a','e','i','o','u','A','E','I','O','U');
         char[] chars = str.toCharArray();
@@ -55,7 +70,9 @@ public class ReverseVowels {
         // String str = args[0];
         System.out.println(reverseVowels("hello"));
         System.out.println(reverseVowels2("hello"));
+        System.out.println(reverseVowels3("hello"));
         System.out.println(reverseVowels("leetcode"));
         System.out.println(reverseVowels2("leetcode"));
+        System.out.println(reverseVowels3("leetcode"));
     }
 }

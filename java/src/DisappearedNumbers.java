@@ -11,19 +11,16 @@ Find all the elements of [1, n] inclusive that do not appear in this array.
  */
 public class DisappearedNumbers {
 
-    public List<Integer> findDisappearedNumbers(int[] nums) {
+    public  int[] findDisappearedNumbers(int[] nums) {
         List<Integer> results = new ArrayList<>();
-
-        for ( int num: nums){
-            int idx = Math.abs(num)%nums.length;
-            if ( nums[idx] > 0 )  nums[idx] *= -1;
+        for ( int n: nums){
+            int idx = Math.abs(n) - 1;
+            if ( nums[idx] > 0 ) nums[idx] *= -1;
         }
-
-        for ( int i = 1 ; i <= nums.length; ++i){
-            int idx = i%nums.length;
-            if ( nums[idx] > 0  ) results.add(i);
+        for ( int i = 0; i < nums.length ; ++i ) {
+            if ( nums[i] > 0 ) results.add(i+1);
         }
-        return results;
+        return results.stream().mapToInt(Integer::intValue).toArray();
     }
 
 }

@@ -36,7 +36,6 @@ public class ShortestWeightedPath {
                 int curDist = distMap.getOrDefault(nei.dst,Integer.MAX_VALUE);
                 int newDist = dist + nei.wgt;
                 if ( newDist < curDist ) {
-                    q.remove( nei.dst );
                     distMap.put( nei.dst, newDist );
 //                    predMap.put ( nei.dst, node );
                     q.add( nei.dst );

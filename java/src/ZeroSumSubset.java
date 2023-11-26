@@ -27,10 +27,25 @@ public class ZeroSumSubset {
         return find(arr, 0, null);
     }
 
+    public static boolean find2Util(int[] arr, int idx, int total) {
+        if ( total == 0 ) return true;
+        if ( idx == arr.length ) return false;
+        return find2Util(arr,idx+1, total + arr[idx] );
+    }
+
+    public static boolean find2(int[] arr) {
+        if ( arr == null || arr.length == 0 ) return false;
+        for( int i = 0; i < arr.length; ++i ) {
+            if ( find2Util(arr,i+1,arr[i]) )   return true;
+        }
+        return false;
+    }
+
     public static void main(String[] args ){
 //        int[] arr = Stream.of(args[0].split("[\\s,]+")).mapToInt(Integer::parseInt).toArray();
 
         int[] arr = {8,2,1,-3};
         System.out.println(find(arr));
+        System.out.println(find2(arr));
     }
 }

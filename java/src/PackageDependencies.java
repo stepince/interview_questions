@@ -8,33 +8,28 @@ public class PackageDependencies {
 
     Map<String, Set<String>> vertices  = new HashMap<>();
 
-    public void add(String parent, String child){
-        vertices.putIfAbsent(child, new HashSet<>());
-        vertices.computeIfAbsent(parent, (key)->new HashSet<>()).add(child);
+    public void add(String node, String nei){
+        vertices.computeIfAbsent(node, (key)->new HashSet<>()).add(nei);
     }
 
-    void dfs(Deque<String> deq ){
-        Set<String> visited = new HashSet<>();
-        for ( String n: vertices.keySet() ){
-            if ( !visited.contains(n)) {
-                dfsVisit(n,visited, deq);
-            }
-        }
-    }
-
-    void dfsVisit(String node, Set<String> visited, Deque<String> deq ){
+    void topSortUtil(String node, Set<String> visited, Deque<String> deq ){
         visited.add(node);
-        for ( String child: vertices.get(node) ){
+        for ( String child: vertices.getOrDefault(node, Collections.emptySet()) ){
             if ( !visited.contains(child)) {
-                dfsVisit(child, visited, deq);
+                topSortUtil(child, visited, deq);
             }
         }
         deq.addFirst(node);
     }
 
     public List<String> topSort(){
-        LinkedList<String> l  = new LinkedList<>();
-        dfs(l);
+        LinkedList<String> l = new LinkedList<>();
+        Set<String> visited = new HashSet<>();
+        for ( String n: vertices.keySet() ){
+            if ( !visited.contains(n)) {
+                topSortUtil(n,visited, l);
+            }
+        }
         return l;
     }
 

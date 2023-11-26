@@ -26,7 +26,7 @@ public class NGE {
         int[] out = new int[nums.length];
         Stack<Integer> st = new Stack<>();
         // monotone stack
-        // 2,3,4,5
+        // 2,3,4,5 non-increasing stack
         for ( int i = nums.length-1; i >= 0; --i ){
             while( !st.empty() && nums[i] >= st.peek()) st.pop();
             out[i] = st.empty() ? -1 : st.peek();

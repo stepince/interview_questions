@@ -1,11 +1,11 @@
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 
 /*
 
 https://leetcode.com/problems/basic-calculator-ii/
 
-I think this is the simplest and most intuitive solution to follow.
+I think this and calculator5 are the simplest and most intuitive solutions to follow.
 It is also pretty fast 81% on leetcode
 
 note: non-negative
@@ -18,8 +18,8 @@ public class Calculator3 {
         int result = 0;
         // use a queue, process inorder
         // nums always has one more than operators
-        Deque<Integer> nums = new LinkedList<>();
-        Deque<Character> opers = new LinkedList<>();
+        Deque<Integer> nums = new ArrayDeque<>();
+        Deque<Character> opers = new ArrayDeque<>();
         for ( char ch: s.toCharArray() ){
             if ( Character.isSpaceChar(ch) ) continue;
             if ( Character.isDigit(ch ) ) {

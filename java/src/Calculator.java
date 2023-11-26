@@ -13,12 +13,10 @@ public class Calculator {
         Stack<Integer> st = new Stack<>();
 
         for ( char ch: s.toCharArray() ){
-            if ( Character.isSpaceChar(ch) ) continue;
             if ( Character.isDigit(ch) ){
                 num = num * 10 + (ch - '0');
-                continue;
             }
-            if ( ch == '-' ){
+            else if ( ch == '-' ){
                 result += sign * num;
                 sign = -1;
                 num = 0;

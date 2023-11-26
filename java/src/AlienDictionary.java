@@ -20,11 +20,8 @@ Space:
 public class AlienDictionary {
 
     Map<Character,Set<Character>> graph = new HashMap<>();
-    public void add(Character ch1, Character ch2) {
-        graph.computeIfAbsent(ch1, (key)->new HashSet<>()).add(ch2);
-    }
 
-    void topSortUtil( Character node, Set<Character> visited, Deque<Character> results){
+    void topSortUtil ( Character node, Set<Character> visited, Deque<Character> results){
         visited.add(node);
         for ( Character nei : graph.getOrDefault(node,Collections.emptySet() ) ){
             if ( !visited.contains(nei) ){
@@ -55,7 +52,7 @@ public class AlienDictionary {
                 Character ch1 = word1.charAt(j);
                 Character ch2 = word2.charAt(j);
                 if ( !ch1.equals(ch2) ) {
-                    add(ch1,ch2);
+                    graph.computeIfAbsent(ch1, (key)->new HashSet<>()).add(ch2);
                     break;
                 }
             }

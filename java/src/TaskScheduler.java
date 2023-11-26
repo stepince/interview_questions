@@ -43,7 +43,6 @@ public class TaskScheduler {
                 ++maxFreqCount;
             }
         }
-        int slots = maxFreq*(n+1);
         // calculate slots usage
         // case: tasks greater than slots
         //       return tasks;
@@ -63,7 +62,7 @@ public class TaskScheduler {
         //    we don't need all 8
         //    ((maxFreq-1)*(n+1)) + maxFreqCount == 6  --> this is less then task
         //    Math.max(tasks.length,  ((maxFreq-1)*(n+1)) + maxFreqCount );
-        int total = ( tasks.length >= slots ) ? tasks.length : ((maxFreq-1)*(n+1)) + maxFreqCount;
+        int total = ((maxFreq-1)*(n+1)) + maxFreqCount;
         // calculate slots
         return Math.max(total,tasks.length);
     }

@@ -18,7 +18,7 @@ public class CheckSubarraySum {
         if ( nums.length < 2 ) return false;
 
         for ( int i = 1; i < nums.length ; ++i){
-            // zeres are multiples of everything including zeros,  n*k=0
+            // zeroes are multiples of everything including zeros,  n*k=0
             if ( nums[i-1] == 0 && nums[i] == 0 ) return true;
         }
         // only zero is a multiple of zero

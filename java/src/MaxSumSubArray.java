@@ -10,6 +10,8 @@ Kadane algorithm
 O(n)
 */
 
+import java.util.stream.IntStream;
+
 public class MaxSumSubArray {
 
    public static int find( int[] arr ){
@@ -25,5 +27,12 @@ public class MaxSumSubArray {
 //        int[] arr = Arrays.stream(args[0].split("[,\\s]+")).mapToInt(Integer::parseInt).toArray();
         int[] arr = {1, -2, 3, 10, -4, 7, 2, -5};
         System.out.println(find(arr));
+        int k = 5;
+        int curr = IntStream.of(arr).limit(k).sum();
+        int max = curr;
+        for (int i = k; i < arr.length; ++i) max = Math.max(max, curr += (arr[i] - arr[i-k]) );
+//        return max;
+        System.out.println("max:" + max);
+
     }
 }

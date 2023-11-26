@@ -1,5 +1,3 @@
-import java.util.HashSet;
-import java.util.Set;
 /*
 
 https://leetcode.com/problems/friend-circles/
@@ -15,29 +13,32 @@ And you have to output the total number of friend circles among all the students
 
 Time:
   O(N^2)
+https://leetcode.com/problems/number-of-provinces/
 
  */
 public class FriendCircles {
 
-
-    boolean dfsVisit( int[][] M, int row, Set<Integer> visited ){
-        if ( visited.contains(row) ) return false;
-        visited.add(row);
-        boolean doCount = false;
-        for ( int col = 0 ; col < M[row].length; ++col ){
-            if ( M[row][col] == 1 ) {
-                doCount = true;
-                dfsVisit(M,col,visited);
+    int[][] isConnected;
+    boolean[] visited;
+    boolean dfsVisit(int row) {
+        if ( visited[row] ) return false;
+        visited[row] = true;
+        boolean visit = false;
+        for( int col = 0; col < isConnected[0].length; ++col ) {
+            if ( isConnected[row][col] == 1 ) {
+                visit = true;
+                dfsVisit(col);
             }
         }
-        return doCount;
+        return visit;
     }
 
     public int findCircleNum(int[][] M) {
+        this.isConnected = M;
+        this.visited = new boolean[isConnected.length];
         int count = 0;
-        Set<Integer> visited = new HashSet<>();
         for ( int row = 0 ; row < M.length ; ++row ){
-            if ( dfsVisit(M,row,visited)  ) ++count;
+            if ( dfsVisit(row)  ) ++count;
         }
         return count;
     }

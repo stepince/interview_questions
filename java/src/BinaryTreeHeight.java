@@ -33,7 +33,7 @@ public class BinaryTreeHeight {
     }
 
     public static int getHeight(Node n){
-        if ( n == null ) return 0;
+        if ( n == null ) return -1;
         return Math.max( getHeight(n.left), getHeight(n.right) ) + 1;
     }
 

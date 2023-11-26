@@ -1,7 +1,5 @@
 import java.util.*;
 /*
-
-
   union-find
   space: O( N )
   merge: O( a(N))
@@ -28,13 +26,11 @@ public class MergeAccounts {
         return acct;
     }
 
-    void collectAll( Map<String, Account> acctMap, Account acct, Set<String> visited ){
+    void collectAll( Map<String, Account> acctMap, Account acct, List<String> visited ){
         visited.add(acct.email);
         for ( String email: acct.emails ){
-            if ( !visited.contains(email) ){
-                visited.add(email);
-                collectAll(acctMap,acctMap.get(email),visited);
-            }
+            // no need to check for cycle
+            collectAll(acctMap,acctMap.get(email),visited);
         }
     }
 
@@ -43,16 +39,17 @@ public class MergeAccounts {
         for ( List<String> acctInfo : accounts ){
             final String name = acctInfo.get(0);
             final String acctEmail = acctInfo.get(1);
-
-            Account parentAcct = acctMap.containsKey(acctEmail) ? findParent(acctMap.get(acctEmail)) : acctMap.computeIfAbsent(acctEmail, (key)-> new Account(name,acctEmail) );
+            Account acct = acctMap.get(acctEmail);
+            Account parentAcct = acct == null ? acctMap.computeIfAbsent(acctEmail, (key)-> new Account(name,acctEmail) ) : findParent(acct);
             for ( int i = 2; i < acctInfo.size();++i ){
                 String email = acctInfo.get(i);
-                if ( !acctMap.containsKey(email) ){
+                acct = acctMap.get(email);
+                if ( acct == null ){
                     parentAcct.emails.add(email);
                     acctMap.computeIfAbsent( email, (key)->new Account(name,email)).parent = parentAcct;
                     continue;
                 }
-                Account oldParent = findParent(acctMap.get(email));
+                Account oldParent = findParent(acct);
                 if ( oldParent != parentAcct ){
                     oldParent.parent = parentAcct;
                     parentAcct.emails.add(oldParent.email);
@@ -63,12 +60,11 @@ public class MergeAccounts {
         List<List<String>> newList = new ArrayList<>();
         for( Account acct: acctMap.values() ){
             if ( acct.parent == acct ){
-                Set<String> visited = new HashSet<>();
+                List<String> visited = new ArrayList<>();
                 collectAll( acctMap, acct, visited );
-                List<String> l = new ArrayList<>(visited);
-                Collections.sort(l);
-                l.add(0,acct.name);
-                newList.add( l );
+                Collections.sort(visited);
+                visited.add(0,acct.name);
+                newList.add( visited );
             }
         }
         return newList;
@@ -81,6 +77,7 @@ public class MergeAccounts {
         }
         return accountsMerge(accountsList) ;
     }
+
     public static void main(String[] args){
         String[][] accounts = {
                 {"David","David0@m.co","David4@m.co","David3@m.co"},

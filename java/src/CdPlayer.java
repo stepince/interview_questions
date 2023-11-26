@@ -9,10 +9,12 @@ import java.util.stream.Stream;
 public class CdPlayer {
 
     List<Song> songs;
+    Random rand = new Random();
 
     public CdPlayer(List<Song> songs){
         this.songs = songs;
     }
+
     static class Song {
         final private String name;
         public Song(String name){
@@ -26,8 +28,8 @@ public class CdPlayer {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            Song song = (Song) o;
-            return Objects.equals(name, song.name);
+            Song that = (Song) o;
+            return Objects.equals(name, that.name);
         }
 
         @Override
@@ -41,22 +43,10 @@ public class CdPlayer {
     }
 
     public void shuffle(){
-        Random rand = new Random();
         int size = songs.size();
-        List<Song> songsCopy = new ArrayList<>(songs);
-        for ( int i = 0; i < size; ++i ){
-            Collections.swap(songsCopy, i, rand.nextInt(size) );
-        }
-
-        for ( int i = 0, j = 0; i < size; ++i, ++j ){
-            int jIdx = j%size;
-            Song song = songsCopy.get(i);
-            while ( song == null || song.equals(songs.get(i)) ) {
-                jIdx=++j%size ;
-                song= songsCopy.get(jIdx);
-            }
-            songs.set(i,song);
-            songsCopy.set(jIdx,null);
+        for ( int i = size-1; i > 0 ;  --i ){
+            int j = rand.nextInt(i);
+            Collections.swap(this.songs,i,j);
         }
     }
 

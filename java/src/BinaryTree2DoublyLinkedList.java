@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 /*
   create a iinkedlist inorder
 
@@ -11,7 +10,7 @@ import java.util.List;
  */
 public class BinaryTree2DoublyLinkedList {
 
-    // Graph node class
+    // Graph node classF
     static class Node {
         private final String value;
         Node left;
@@ -21,7 +20,7 @@ public class BinaryTree2DoublyLinkedList {
         }
     }
 
-    public static void tree2LinkedListUtil( Node root, List<Node> l ){
+    public static void tree2LinkedListUtil( Node root, LinkedList<Node> l ){
         if ( root == null ) return;
         tree2LinkedListUtil(root.left,l);
         l.add(root);
@@ -30,7 +29,7 @@ public class BinaryTree2DoublyLinkedList {
 
     public static Node tree2LinkedList( Node root ){
         if ( root == null ) return null;
-        List<Node> l = new ArrayList<>();
+        LinkedList<Node> l = new LinkedList<>();
         // do the inorder traversal
         tree2LinkedListUtil(root,l);
         l.get(0).left =  null;
