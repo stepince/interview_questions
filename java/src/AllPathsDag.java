@@ -16,8 +16,8 @@ O(N 2^N)
 Space
 O(N 2^N)
  */
-public class AllPathsGraph {
-    void allPathsUtil(int[][] graph, Integer src,Deque<Integer> l, List<List<Integer>> results) {
+public class AllPathsDag {
+    static void allPathsUtil(int[][] graph, Integer src,Deque<Integer> l, List<List<Integer>> results) {
         if(src.equals(graph.length-1)) {
            results.add(new ArrayList<>(l));
            return;
@@ -29,9 +29,9 @@ public class AllPathsGraph {
         }
     }
 
-    public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
+    public static List<List<Integer>> allPathsSourceTarget(int[][] graph) {
         List<List<Integer>> results = new ArrayList<>();
-        allPathsUtil(graph, 0,new ArrayDeque(List.of(0)), results);
+        allPathsUtil(graph, 0,new ArrayDeque<>(List.of(0)), results);
         return results;
     }
 
