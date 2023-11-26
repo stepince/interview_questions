@@ -56,9 +56,13 @@ public class ZeroSumSubsetCount {
 
     private static int find3Util(int[] nums, int idx, int total ){
         if ( idx == nums.length ) return ( total == 0 ) ? 1 : 0;
+        // return include + exclude
         return find3Util(nums, idx+1, total+nums[idx]) + find3Util(nums, idx+1, total);
     }
 
+    /*
+      most intuitive, can handle zero case
+     */
     public static int find3(int[] nums) {
         int count = 0;
         for ( int i = 0; i < nums.length; ++i ){
